@@ -12,9 +12,14 @@ router.get(`/getAllArticles`,async (req, res) => {
 
 router.post(`/createArticle`, (req, res) => {
     const article = new Article({
-        nameArticle: req.body.nameArticle,
+        code_article: req.body.code_article,
+        name_article: req.body.name_article,
+        price_article: req.body.price_article,
+        description_article: req.body.description_article,
         image: req.body.image,
-        countInStock: req.body.countInStock
+        stock: req.body.stock,
+        available: req.body.available,
+        dateCreated: Date.parse(new Date())
     });
     article.save().then((createdArticle=>{
         res.status(201).json(createdArticle);

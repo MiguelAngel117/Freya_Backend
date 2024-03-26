@@ -17,12 +17,13 @@ app.use(morgan('tiny'));
 
 //Routes 
 const articlesRoute = require('./routes/articles');
+const usersRoute = require('./routes/users');
 
 
 const api = process.env.BASE_URL;
 
 app.use(`${api}/articles`, articlesRoute);
-
+app.use(`${api}/users`, usersRoute);
 
 
 app.get("/", (req, res) => {
