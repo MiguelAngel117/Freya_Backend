@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const purchaseSchema = mongoose.Schema({
+const saleSchema = mongoose.Schema({
     user_id: {
         type: mongoose.Schema.ObjectId,
         ref: 'users'
@@ -14,10 +14,10 @@ const purchaseSchema = mongoose.Schema({
         quantity:{type: Number, default: 0},
         total: String
     }],
-    totalPurchase: String,
-    statusPurchase: String,
+    totalSale: String,
+    statusSale: String,
     dateCreated: { type: Date, default: Date.now },
     dateUpdated: Date
 })
 
-exports.Purchase = mongoose.model('purchases', purchaseSchema);
+exports.Sale = mongoose.model('sales', saleSchema);

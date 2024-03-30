@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { code_article, name_article, price_article, description_article, images, stock, category, available } = req.body;
+        const { code_article, name_article, price_article, description_article, images, stock, category, available, gender } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(category)) {
             return res.status(400).send("Invalid category ID");
@@ -37,6 +37,7 @@ router.post('/', async (req, res) => {
             stock: stock.map(([size, quantity]) => ({ size, quantity })),
             category,
             available,
+            gender,
             dateCreated: new Date()
         });
 
@@ -95,7 +96,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { code_article, name_article, price_article, description_article, images, stock, category, available } = req.body;
+        const { code_article, name_article, price_article, description_article, images, stock, category, available, gender } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).send("Invalid article ID");
@@ -123,6 +124,7 @@ router.put('/:id', async (req, res) => {
                 stock: stock.map(([size, quantity]) => ({ size, quantity })),
                 category,
                 available,
+                gender,
                 dateUpdated: new Date()
             },
             { new: true }

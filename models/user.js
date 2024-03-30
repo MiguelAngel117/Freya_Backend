@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema({
     status_user: String,
     isAdmin: Boolean,
     created_at: { type: Date, default: Date.now },
-    updated_at: { type: Date, default: Date.now }
+    updated_at: Date
 })
 
 exports.User = mongoose.model('users', userSchema);

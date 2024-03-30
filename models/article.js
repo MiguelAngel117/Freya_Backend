@@ -15,7 +15,9 @@ const articleSchema = mongoose.Schema({
         quantity:{type: Number, default: 0}
     }],
     available: Boolean,
-    dateCreated: { type: Date, default: Date.now }
+    gender: String,
+    dateCreated: { type: Date, default: Date.now },
+    dateUpdated: Date
 })
 
 exports.Article = mongoose.model('articles', articleSchema);
