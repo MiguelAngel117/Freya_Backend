@@ -12,7 +12,12 @@ const userSchema = mongoose.Schema({
     email: String,
     password: String,
     status_user: String,
-    isAdmin: Boolean
+    isAdmin: Boolean,
+    created_at: { type: Date, default: Date.now },
+    updated_at: { type: Date, default: Date.now }
 })
 
 exports.User = mongoose.model('users', userSchema);
+
+
+
