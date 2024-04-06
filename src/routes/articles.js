@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { code_article, name_article, price_article, description_article, images, stock, category, available, gender } = req.body;
+        const { code_article, name_article, retail_price, medium_price, wholesale_price, description_article, images, stock, size_guide, category, available, gender } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(category)) {
             return res.status(400).send("Invalid category ID");
@@ -31,13 +31,16 @@ router.post('/', async (req, res) => {
         const article = new Article({
             code_article,
             name_article,
-            price_article,
+            retail_price,
+            medium_price,
+            wholesale_price,
             description_article,
             images,
             stock: stock.map(([size, quantity]) => ({ size, quantity })),
             category,
             available,
             gender,
+            size_guide,
             dateCreated: new Date()
         });
 

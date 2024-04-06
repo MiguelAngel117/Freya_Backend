@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const articleSchema = mongoose.Schema({
     code_article: String,
     name_article: String,
-    price_article: String,
+    retail_price: Number,
+    medium_price: Number,
+    wholesale_price: Number,
     description_article: String,
     images: {},
     category: {
@@ -16,6 +18,7 @@ const articleSchema = mongoose.Schema({
     }],
     available: Boolean,
     gender: String,
+    size_guide: String,
     dateCreated: { type: Date, default: Date.now },
     dateUpdated: Date
 })
