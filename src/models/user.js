@@ -11,13 +11,14 @@ const userSchema = mongoose.Schema({
     number_phone: String,
     email: String,
     password: String,
-    status_user: String,
+    status_user: Boolean,
     isAdmin: Boolean,
     created_at: { type: Date, default: Date.now },
     updated_at: Date
 })
 
-exports.User = mongoose.model('users', userSchema);
+const User = mongoose.model('users', userSchema);
+module.exports = User;
 
 
 
