@@ -13,8 +13,7 @@ const createUser = async (req, res) => {
             number_phone: req.body.number_phone,
             email: req.body.email,
             password: req.body.password,
-            status_user: true,
-            isAdmin: false
+            status_user: true
         });
     
         const savedUser = await user.save();

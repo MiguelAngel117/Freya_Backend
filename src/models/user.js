@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name_user: String,
     type_document: String,
     number_document: String,
@@ -12,13 +12,16 @@ const userSchema = mongoose.Schema({
     email: String,
     password: String,
     status_user: Boolean,
-    isAdmin: Boolean,
-    created_at: { type: Date, default: Date.now },
-    updated_at: Date
+    role: {
+        type: String,
+        default: "user"
+    },
+},{
+    timestamps: true,
+    versionKey: false
 })
 
-const User = mongoose.model('users', userSchema);
-module.exports = User;
+module.exports = mongoose.model('users', userSchema);
 
 
 

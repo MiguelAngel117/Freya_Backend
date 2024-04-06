@@ -1,18 +1,21 @@
-const User = require('../models/user');
+const userModel = require('../models/user');
 const {encrypt, compare} = require('../helpers/handleBcrypt');
+const { tokenSign } = require('../helpers/generateToken');
 
 const login = async (req, res) =>{
     try {
         const {email, password} = req.body;
-        const user = await User.findOne({email});
+        const user = await userModel.findOne({email});
         if(!user) {
             res.status(404).send("USER NOT FOUND");
             return;
         }
         const checkPassword = await compare(password, user.password);
+        const tokenSession = await tokenSign(user)
         if(checkPassword){
             res.send({
-                data: user
+                data: user,
+                tokenSession
             });
             return;
         }else{
@@ -30,18 +33,17 @@ const login = async (req, res) =>{
 const register = async (req, res) =>{
     try {
         const {name_user, email, password} = req.body;
-        const findUser = await User.findOne({email});
+        const findUser = await userModel.findOne({email});
         if(findUser) {
             res.status(404).send("USER ALREADY EXISTS");
             return;
         }
         const encryptedPass = await encrypt(password);
-        const user = new User({
+        const user = new userModel({
             name_user,
             email,
             password: encryptedPass,
-            status_user: true,
-            isAdmin: false
+            status_user: true
         });
         const savedUser = await user.save();
         res.status(201).send(savedUser);
