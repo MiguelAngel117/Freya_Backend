@@ -15,74 +15,68 @@ const getArticles = async (req, res) => {
 const createArticle = async (req, res) => {
     try {
         const { code_article, name_article, retail_price, medium_price, wholesale_price, description_article, images, stock, size_guide, category, available, gender } = req.body;
-
-        if (!mongoose.Types.ObjectId.isValid(category)) {
-            return res.status(400).send("Invalid category ID");
+        if(category.length === 24){
+            const existingCategory = await Category.findById(category);
+            if (!existingCategory) {
+                return res.status(404).send("Category not found");
+            }
+            const article = new Article({
+                code_article,
+                name_article,
+                retail_price,
+                medium_price,
+                wholesale_price,
+                description_article,
+                images,
+                stock: stock.map(([size, quantity]) => ({ size, quantity })),
+                category,
+                available,
+                gender,
+                size_guide
+            });
+            const savedArticle = await article.save();
+            res.status(201).send(savedArticle);
+        }else{
+            res.status(400).send("INCOMPLETE ID");
         }
-
-        const existingCategory = await Category.findById(category);
-        if (!existingCategory) {
-            return res.status(404).send("Category not found");
-        }
-
-        const article = new Article({
-            code_article,
-            name_article,
-            retail_price,
-            medium_price,
-            wholesale_price,
-            description_article,
-            images,
-            stock: stock.map(([size, quantity]) => ({ size, quantity })),
-            category,
-            available,
-            gender,
-            size_guide
-        });
-
-        const savedArticle = await article.save();
-        res.status(201).send(savedArticle);
     } catch (error) {
         console.error("Error creating article:", error);
         res.status(500).send("Internal server error");
     }
 }
 
-const deleteArticle = async (req, res) => {
+const deleteArticleById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const deletedArticle = await Article.findByIdAndDelete(id);
-        if (!deletedArticle) {
-            return res.status(404).send("Article not found");
+        const id = req.params.id;
+        if(id.length === 24){
+            const deletedArticle = await Article.findByIdAndDelete(id);
+            if (!deletedArticle) {
+                res.status(404).send("Article not found to delete");
+                return;
+            }
+            res.status(200).send("Article deleted successfully");
+        }else{
+            res.status(400).send("INCOMPLETE ID");
         }
-        res.send(deletedArticle);
+        
     } catch (error) {
-        console.error("Error deleting article:", error);
-        res.status(500).send("Internal server error");
+        console.error("Error deleting Article by ID:", error);
+        res.status(500).send("Error deleting Article by ID - Internal Server Error");
     }
-};
-
-const deleteArticles = async (req, res) => {
-    try {
-        await Article.deleteMany({});
-        res.send("All articles deleted successfully");
-    } catch (error) {
-        console.error("Error deleting all articles:", error);
-        res.status(500).send("Internal server error");
-    }
-};
+}
 
 const getArticle = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if(id.length === 24){
+            const article = await Article.findById(id);
+            if (!article) {
+                return res.status(404).send("Article not found");
+            }
+            res.send(article);
+        }else{
             return res.status(400).send("Invalid article ID format");
         }
-        const article = await Article.findById(id);
-        if (!article) {
-            return res.status(404).send("Article not found");
-        }
-        res.send(article);
     } catch (error) {
         console.error("Error searching article by ID:", error);
         res.status(500).send("Internal server error");
@@ -92,48 +86,151 @@ const getArticle = async (req, res) => {
 const setArticle = async (req, res) => {
     try {
         const { id } = req.params;
-        const { code_article, name_article, price_article, description_article, images, stock, category, available, gender } = req.body;
+        const {code_article, name_article, retail_price, medium_price, wholesale_price, description_article, images, stock, size_guide, category, available, gender } = req.body;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).send("Invalid article ID");
-        }
+        if(id.length === 24){
+            if(category != undefined){
+                if(category.length == 24){
+                    const existingCategory = await Category.findById(category);
+                    if (!existingCategory) {
+                        return res.status(404).send("Category not found");
+                    }
+                }else{
+                    return res.status(400).send("Invalid CATEGORY_ID");
+                }
+            }
+            let formattedStock;
+            if(stock != undefined){
+                formattedStock = stock.map(([size, quantity]) => ({ size, quantity }));
+            }else{
+                formattedStock = undefined;
+            }
 
-        if(category || typeof category === 'string'){
-            if (!mongoose.Types.ObjectId.isValid(category)) {
-                return res.status(400).send("Invalid category ID");
+            const updatedArticle = await Article.findByIdAndUpdate(
+                id,
+                {
+                    code_article,
+                    name_article,
+                    retail_price,
+                    medium_price,
+                    wholesale_price,
+                    description_article,
+                    images,
+                    stock: formattedStock,
+                    category,
+                    available,
+                    gender,
+                    size_guide
+                },
+                { new: true }
+            );
+    
+            if (!updatedArticle) {
+                return res.status(404).send("Article not found");
             }
     
-            const existingCategory = await Category.findById(category);
-            if (!existingCategory) {
-                return res.status(404).send("Category not found");
-            }
+            res.send(updatedArticle);            
+        }else{
+            return res.status(400).send("Invalid article ID");
         }
-        
-        const updatedArticle = await Article.findByIdAndUpdate(
-            id,
-            {
-                code_article,
-                name_article,
-                price_article,
-                description_article,
-                images,
-                stock: stock.map(([size, quantity]) => ({ size, quantity })),
-                category,
-                available,
-                gender
-            },
-            { new: true }
-        );
-
-        if (!updatedArticle) {
-            return res.status(404).send("Article not found");
-        }
-
-        res.send(updatedArticle);
     } catch (error) {
         console.error("Error updating article:", error);
         res.status(500).send("Internal server error");
     }
 };
 
-module.exports = {getArticles, getArticle, createArticle, deleteArticle, deleteArticles, setArticle};
+const searchArticlesByName = async (req, res) => {
+    try {
+        const searchTerm = req.query.name_article;
+        if (!searchTerm) {
+            return res.status(400).send("Se requiere un término de búsqueda");
+        }
+
+        // Buscar artículos por nombre
+        const matchedArticles = await Article.find({ name_article: { $regex: searchTerm, $options: 'i' } });
+
+        if (matchedArticles.length === 0) {
+            return res.status(404).send("No se encontraron artículos que coincidan con la búsqueda");
+        }
+
+        res.status(200).send(matchedArticles);
+    } catch (error) {
+        console.error("Error al buscar artículos por nombre:", error);
+        res.status(500).send("Error al buscar artículos por nombre - Error interno del servidor");
+    }
+}
+
+const searchArticlesByNameAndCategory = async (req, res) => {
+    try {
+        const searchTerm = req.query.name_article;
+        const categoryId = req.query.category;
+
+        if (!searchTerm && !categoryId) {
+            return res.status(400).send("Se requiere al menos un término de búsqueda");
+        }
+
+        const searchCriteria = {};
+        if (searchTerm) {
+            searchCriteria.name_article = { $regex: searchTerm, $options: 'i' };
+        }
+        if (categoryId) {
+            searchCriteria.category = categoryId;
+        }
+        const matchedArticles = await Article.find(searchCriteria);
+
+        if (matchedArticles.length === 0) {
+            return res.status(404).send("No se encontraron artículos que coincidan con la búsqueda");
+        }
+        res.status(200).send(matchedArticles);
+    } catch (error) {
+        console.error("Error al buscar artículos por nombre y/o categoría:", error);
+        res.status(500).send("Error al buscar artículos por nombre y/o categoría - Error interno del servidor");
+    }
+}
+
+const searchArticlesByCategory = async (req, res) => {
+    try {
+        const categoryId = req.query.category;
+
+        if (!categoryId) {
+            return res.status(400).send("Se requiere el ID de la categoría para la búsqueda");
+        }
+
+        const matchedArticles = await Article.find({ category: categoryId });
+
+        if (matchedArticles.length === 0) {
+            return res.status(404).send("No se encontraron artículos en esta categoría");
+        }
+
+        res.status(200).send(matchedArticles);
+    } catch (error) {
+        console.error("Error al buscar artículos por categoría:", error);
+        res.status(500).send("Error al buscar artículos por categoría - Error interno del servidor");
+    }
+}
+
+const searchArticlesByPriceRange = async (req, res) => {
+    try {
+        const minPrice = parseFloat(req.query.min_price);
+        const maxPrice = parseFloat(req.query.max_price);
+
+        if (!minPrice || !maxPrice || minPrice >= maxPrice) {
+            return res.status(400).send("Se requieren un rango de precios válido (min_price < max_price)");
+        }
+
+        const matchedArticles = await Article.find({
+            retail_price: { $gte: minPrice, $lte: maxPrice }
+        });
+
+        if (matchedArticles.length === 0) {
+            return res.status(404).send("No se encontraron artículos en el rango de precios especificado");
+        }
+
+        res.status(200).send(matchedArticles);
+    } catch (error) {
+        console.error("Error al buscar artículos por rango de precios:", error);
+        res.status(500).send("Error al buscar artículos por rango de precios - Error interno del servidor");
+    }
+}
+
+module.exports = {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName, searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange};

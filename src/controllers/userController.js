@@ -95,4 +95,23 @@ const sortUsers = async (req, res) => {
     }
 };
 
-module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers };
+const searchUsersByName = async (req, res) => {
+    try {
+        const searchTerm = req.query.name_user;
+        if (!searchTerm) {
+            return res.status(400).send("Se requiere un término de búsqueda");
+        }
+        const matchedUsers = await User.find({ name_user: { $regex: searchTerm, $options: 'i' } });
+
+        if (matchedUsers.length === 0) {
+            return res.status(404).send("No se encontraron usuarios que coincidan con la búsqueda");
+        }
+
+        res.status(200).send(matchedUsers);
+    } catch (error) {
+        console.error("Error al buscar usuarios por nombre:", error);
+        res.status(500).send("Error al buscar usuarios por nombre - Error interno del servidor");
+    }
+}
+
+module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers, searchUsersByName };

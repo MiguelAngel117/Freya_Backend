@@ -18,7 +18,8 @@ const articleSchema = mongoose.Schema({
     }],
     available: Boolean,
     gender: String,
-    size_guide: String
+    size_guide: String,
+    color: String
 }, {
     timestamps: true,
     versionKey: false

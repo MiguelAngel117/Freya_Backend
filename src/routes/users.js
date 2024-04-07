@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const checkAuth = require('../middleware/authMiddle');
 const checkRoleAuth = require('../middleware/roleAuth');
-const { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers } = require('../controllers/userController');
+const { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers, searchUsersByName } = require('../controllers/userController');
 
 // Route for sorting users
 router.get('/sort', checkAuth, checkRoleAuth(['admin']), sortUsers);
+router.get('/search', searchUsersByName);
 
 // Routes for CRUD operations
 router.get('/', checkAuth, checkRoleAuth(['admin']), getUsers);

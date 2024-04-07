@@ -11,8 +11,8 @@ const checkAuth = async (req, res,next ) => {
             res.status(409).send("NO SESSION ACTIVE");
         }
     } catch (error) {
-        console.error("Error:", error);
-        res.status(409).send("No session active");
+        console.log("TOKEN EXPIRED");
+        res.status(409).send("TOKEN EXPIRED");
     }
     
 }
