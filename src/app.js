@@ -32,7 +32,7 @@ app.use(`${api}/purchases`, purchasesRoute);
 
 
 app.get("/", (req, res) => {
-    res.send("hello world");
+    res.send("La App está corriendo");
 });
 
 module.exports = app;
