@@ -25,11 +25,74 @@ const createUser = async (req, res) => {
 };
 
 const getUsers = async (req, res) => {
-    const usersList = await User.find();
-    if(!usersList){
-        res.status(500).json({success: false});
+    try {
+        const usersList = await User.find();
+        if(!usersList){
+            res.status(500).json({success: false});
+        }
+        res.send(usersList); 
+    } catch (error) {
+        console.error("Error getUsers:", error);
+        res.status(500).send("Error get users:");
     }
-    res.send(usersList);
 };
 
-module.exports = {createUser, getUsers};
+// Get a single user by ID
+const getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            res.status(404).send("User not found");
+        } else {
+            res.send(user);
+        }
+    } catch (error) {
+        console.error("Error getUserById:", error);
+        res.status(500).send("Internal server error");
+    }
+};
+
+// Update a user by ID
+const updateUser = async (req, res) => {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedUser) {
+            res.status(404).send("User not found");
+        } else {
+            res.send(updatedUser);
+        }
+    } catch (error) {
+        console.error("Error updateUser:", error);
+        res.status(500).send("Internal server error");
+    }
+};
+
+// Delete a user by ID
+const deleteUser = async (req, res) => {
+    try {
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
+        if (!deletedUser) {
+            res.status(404).send("User not found");
+        } else {
+            res.send(deletedUser);
+        }
+    } catch (error) {
+        console.error("Error deleteUser:", error);
+        res.status(500).send("Internal server error");
+    }
+};
+
+// Sort users by a specific field
+const sortUsers = async (req, res) => {
+    try {
+        const { sortBy } = req.query;
+        const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+        const sortedUsers = await User.find().sort({ [sortBy]: sortOrder });
+        res.send(sortedUsers);
+    } catch (error) {
+        console.error("Error sortUsers:", error);
+        res.status(500).send("Internal server error");
+    }
+};
+
+module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers };
