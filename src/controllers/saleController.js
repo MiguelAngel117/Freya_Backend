@@ -26,8 +26,7 @@ const createSale = async (req, res) => {
         const sale = new Sale({
             articles,
             totalSale,
-            statusSale,
-            dateCreated: new Date()
+            statusSale
         });
 
         const savedSale = await sale.save();

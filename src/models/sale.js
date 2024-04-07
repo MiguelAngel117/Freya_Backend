@@ -15,9 +15,10 @@ const saleSchema = mongoose.Schema({
         total: String
     }],
     totalSale: String,
-    statusSale: String,
-    dateCreated: { type: Date, default: Date.now },
-    dateUpdated: Date
+    statusSale: String
+},{
+    timestamps: true,
+    versionKey: false
 })
 
 exports.Sale = mongoose.model('sales', saleSchema);

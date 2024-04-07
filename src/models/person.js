@@ -10,6 +10,8 @@ const personSchema = mongoose.Schema({
     department: String,
     number_phone: String,
     email: String
+},{
+    versionKey: false
 });
 
 exports.Person = mongoose.model('persons', personSchema);

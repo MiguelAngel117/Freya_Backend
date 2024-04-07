@@ -15,9 +15,10 @@ const purchaseSchema = mongoose.Schema({
         total: String
     }],
     totalPurchase: String,
-    statusPurchase: String,
-    dateCreated: { type: Date, default: Date.now },
-    dateUpdated: Date
+    statusPurchase: String
+},{
+    timestamps: true,
+    versionKey: false
 })
 
 exports.Purchase = mongoose.model('purchases', purchaseSchema);

@@ -37,8 +37,7 @@ const createArticle = async (req, res) => {
             category,
             available,
             gender,
-            size_guide,
-            dateCreated: new Date()
+            size_guide
         });
 
         const savedArticle = await article.save();
@@ -121,8 +120,7 @@ const setArticle = async (req, res) => {
                 stock: stock.map(([size, quantity]) => ({ size, quantity })),
                 category,
                 available,
-                gender,
-                dateUpdated: new Date()
+                gender
             },
             { new: true }
         );

@@ -15,6 +15,7 @@ app.use(morgan('tiny'));
 
 //Routes 
 const authRoute = require('./routes/auth');
+const storesRoute = require('./routes/stores');
 const articlesRoute = require('./routes/articles');
 const usersRoute = require('./routes/users');
 const categoriesRoute = require('./routes/categories');
@@ -24,6 +25,7 @@ const purchasesRoute = require('./routes/purchases');
 const api = process.env.BASE_URL;
 
 app.use(`${api}/auth`, authRoute);
+app.use(`${api}/stores`, storesRoute);
 app.use(`${api}/articles`, articlesRoute);
 app.use(`${api}/users`, usersRoute);
 app.use(`${api}/categories`, categoriesRoute);

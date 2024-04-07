@@ -26,8 +26,7 @@ const createPurchase = async (req, res) => {
         const purchase = new Purchase({
             articles,
             totalPurchase,
-            statusPurchase,
-            dateCreated: new Date()
+            statusPurchase
         });
 
         const savedpurchase = await purchase.save();
