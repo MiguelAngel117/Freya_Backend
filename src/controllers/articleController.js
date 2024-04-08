@@ -1,6 +1,5 @@
-const { Article } = require('../models/article');
+const Article  = require('../models/article');
 const { Category } = require('../models/category');
-const mongoose = require ('mongoose');
 
 const getArticles = async (req, res) => {
     try {

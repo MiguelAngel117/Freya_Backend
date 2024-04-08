@@ -11,7 +11,7 @@ const saleSchema = mongoose.Schema({
             ref: 'articles'
         },
         size: String,
-        quantity:{type: Number, default: 0},
+        quantity: { type: Number, default: 0 },
         total: String
     }],
     totalSale: String,
@@ -19,6 +19,6 @@ const saleSchema = mongoose.Schema({
 },{
     timestamps: true,
     versionKey: false
-})
+});
 
-exports.Sale = mongoose.model('sales', saleSchema);
+module.exports = mongoose.model('sales', saleSchema);

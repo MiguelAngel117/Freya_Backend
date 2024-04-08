@@ -4,12 +4,11 @@ const checkAuth = require('../middleware/authMiddle');
 const checkRoleAuth = require('../middleware/roleAuth');
 const { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers, searchUsersByName } = require('../controllers/userController');
 
-// Route for sorting users
+
 router.get('/sort', checkAuth, checkRoleAuth(['admin']), sortUsers);
 router.get('/search', searchUsersByName);
 
-// Routes for CRUD operations
-router.get('/', checkAuth, checkRoleAuth(['admin']), getUsers);
+router.get('/', getUsers);
 router.post('/', createUser);
 router.get('/:id', checkAuth, checkRoleAuth(['admin']), getUserById);
 router.put('/:id', checkAuth, checkRoleAuth(['admin']), updateUser);
