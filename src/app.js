@@ -21,6 +21,7 @@ const usersRoute = require('./routes/users');
 const categoriesRoute = require('./routes/categories');
 const salesRoute = require('./routes/sales');
 const purchasesRoute = require('./routes/purchases');
+const jobsRoute = require('./routes/jobs');
 
 const api = process.env.BASE_URL;
 
@@ -31,6 +32,7 @@ app.use(`${api}/users`, usersRoute);
 app.use(`${api}/categories`, categoriesRoute);
 app.use(`${api}/sales`, salesRoute);
 app.use(`${api}/purchases`, purchasesRoute);
+app.use(`${api}/jobs`, jobsRoute);
 
 
 app.get("/", (req, res) => {
