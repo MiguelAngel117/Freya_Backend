@@ -1,5 +1,6 @@
 const Article  = require('../models/article');
 const Category = require('../models/category');
+const cloudinary = require('../helpers/cloudDinary');
 
 const getArticles = async (req, res) => {
     try {
@@ -11,14 +12,31 @@ const getArticles = async (req, res) => {
     }
 };
 
+const uploadImage = async (req, res)=>{
+    try {
+        const result = await cloudinary.uploader.upload(req.file.path,{
+            public_id: `Nothing`,
+            with: 500,
+            height: 500,
+            crop: 'fill'
+        })
+        res.status(201).send(result);
+    } catch (error) {
+        res.status(500).send("ERRROR UPLOAD IMAGE");
+        console.log(error);
+    }
+}
+
 const createArticle = async (req, res) => {
     try {
         const { code_article, name_article, retail_price, medium_price, wholesale_price, description_article, images, stock, size_guide, category, available, gender } = req.body;
+
         if(category.length === 24){
             const existingCategory = await Category.findById(category);
             if (!existingCategory) {
                 return res.status(404).send("Category not found");
             }
+            
             const article = new Article({
                 code_article,
                 name_article,
@@ -232,4 +250,4 @@ const searchArticlesByPriceRange = async (req, res) => {
     }
 }
 
-module.exports = {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName, searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange};
+module.exports = {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName, searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage};
