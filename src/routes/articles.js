@@ -17,4 +17,4 @@ router.delete('/:id', deleteArticleById);
 
 router.put('/:id', setArticle);
 
-module.exports = router;
+module.exports = (app) => app.use("/api/v1/articles", router);

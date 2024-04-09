@@ -2,10 +2,10 @@ const storeModel = require('../models/store');
 
 const createStore = async (req, res) =>{
     try {
-        const existingStore = await storeModel.findOne({ address: req.body.address });
+        /*const existingStore = await storeModel.findOne({ address: req.body.address });
         if (existingStore) {
             return res.status(400).send("A store with the same address already exists");
-        }
+        }*/
         const create = await storeModel.create(req.body);
         res.status(201).send(create);
     } catch (error) {

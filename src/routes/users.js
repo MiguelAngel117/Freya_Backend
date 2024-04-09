@@ -8,10 +8,10 @@ const { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers, se
 router.get('/sort', checkAuth, checkRoleAuth(['admin']), sortUsers);
 router.get('/search', searchUsersByName);
 
-router.get('/', getUsers);
+router.get('/', checkAuth, checkRoleAuth(['admin']),getUsers);
 router.post('/', createUser);
 router.get('/:id', checkAuth, checkRoleAuth(['admin']), getUserById);
 router.put('/:id', checkAuth, checkRoleAuth(['admin']), updateUser);
 router.delete('/:id', checkAuth, checkRoleAuth(['admin']), deleteUser);
 
-module.exports = router;
+module.exports = (app) => app.use("/api/v1/users", router);

@@ -5,4 +5,4 @@ const router = express.Router();
 router.post('/login', login);
 router.post('/register', register);
 
-module.exports = router;
+module.exports = (app) => app.use("/api/v1/auth", router);

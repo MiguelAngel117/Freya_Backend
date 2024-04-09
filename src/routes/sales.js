@@ -8,4 +8,4 @@ router.get(`/`,getSales);
 //Crear nueva venta
 router.post(`/`, createSale);
 
-module.exports = router;
+module.exports = (app) => app.use("/api/v1/sales", router);

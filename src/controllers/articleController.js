@@ -1,5 +1,5 @@
 const Article  = require('../models/article');
-const { Category } = require('../models/category');
+const Category = require('../models/category');
 
 const getArticles = async (req, res) => {
     try {

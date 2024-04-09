@@ -9,6 +9,11 @@ const createSale = async (req, res) => {
             return res.status(400).send("Invalid user ID length");
         }
 
+        const user = await User.findById(item.user_id);
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
         for (const item of articles) {
             if (item.article_id.length !== 24) {
                 return res.status(400).send("Invalid article ID length");

@@ -7,4 +7,4 @@ router.get(`/`, getPurchases);
 //Crear nueva compra
 router.post(`/`, createPurchase);
 
-module.exports = router;
+module.exports = (app) => app.use("/api/v1/purchases", router);

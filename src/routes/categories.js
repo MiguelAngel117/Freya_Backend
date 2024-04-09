@@ -21,4 +21,4 @@ router.put(`/:id`, updateCategory);
 
 router.delete(`/:id`, deleteCategory);
 
-module.exports = router;
+module.exports = (app) => app.use("/api/v1/categories", router);

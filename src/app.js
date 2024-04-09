@@ -25,15 +25,23 @@ const jobsRoute = require('./routes/jobs');
 
 const api = process.env.BASE_URL;
 
-app.use(`${api}/auth`, authRoute);
-app.use(`${api}/stores`, storesRoute);
-app.use(`${api}/articles`, articlesRoute);
-app.use(`${api}/users`, usersRoute);
-app.use(`${api}/categories`, categoriesRoute);
-app.use(`${api}/sales`, salesRoute);
-app.use(`${api}/purchases`, purchasesRoute);
-app.use(`${api}/jobs`, jobsRoute);
+authRoute(app);
+storesRoute(app);
+articlesRoute(app);
+usersRoute(app);
+categoriesRoute(app);
+salesRoute(app);
+purchasesRoute(app);
+jobsRoute(app);
 
+//app.use(`${api}/auth`, authRoute);
+//app.use(`${api}/stores`, storesRoute);
+//app.use(`${api}/articles`, articlesRoute);
+//app.use(`${api}/users`, usersRoute);
+//app.use(`${api}/categories`, categoriesRoute);
+//app.use(`${api}/sales`, salesRoute);
+//app.use(`${api}/purchases`, purchasesRoute);
+//app.use(`${api}/jobs`, jobsRoute);
 
 app.get("/", (req, res) => {
     res.send("La App está corriendo");

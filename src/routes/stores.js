@@ -20,4 +20,5 @@ router.put('/:id', updateStoreById);
 
 router.delete('/:id', deleteStoreById);
 
-module.exports = router;
+//module.exports = router;
+module.exports = (app) => app.use("/api/v1/stores", router);
