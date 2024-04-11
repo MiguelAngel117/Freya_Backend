@@ -14,7 +14,6 @@ const checkAuth = async (req, res,next ) => {
         console.log("TOKEN EXPIRED");
         res.status(409).send("TOKEN EXPIRED");
     }
-    
 }
 
 module.exports = checkAuth;

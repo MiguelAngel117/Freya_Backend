@@ -18,16 +18,14 @@ const login = async (req, res) =>{
         const checkPassword = await compare(password, user.password);
         const tokenSession = await tokenSign(user)
         if(checkPassword){
-            res.send({
+            return res.status(200).send({
                 data: user,
                 tokenSession
             });
-            return;
         }else{
-            res.status(409).send({
+            return res.status(409).send({
                 error: 'INVALID PASSWORD'
             })
-            return;
         }
     } catch (error) {
         console.error("Error login:", error);

@@ -9,7 +9,7 @@ router.get('/sort', checkAuth, checkRoleAuth(['admin']), sortUsers);
 router.get('/search', searchUsersByName);
 
 router.get('/', checkAuth, checkRoleAuth(['admin']),getUsers);
-router.post('/', createUser);
+router.post('/', checkAuth, checkRoleAuth(['admin']), createUser);
 router.get('/:id', checkAuth, checkRoleAuth(['admin']), getUserById);
 router.put('/:id', checkAuth, checkRoleAuth(['admin']), updateUser);
 router.delete('/:id', checkAuth, checkRoleAuth(['admin']), deleteUser);
