@@ -5,6 +5,11 @@ const { tokenSign } = require('../helpers/generateToken');
 const login = async (req, res) =>{
     try {
         const {email, password} = req.body;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            res.status(400).send("INVALID EMAIL FORMAT");
+            return;
+        }
         const user = await userModel.findOne({email: email.toUpperCase()});
         if(!user) {
             res.status(404).send("USER NOT FOUND");
@@ -33,6 +38,11 @@ const login = async (req, res) =>{
 const register = async (req, res) =>{
     try {
         const {name_user, email, password} = req.body;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            res.status(400).send("INVALID EMAIL FORMAT");
+            return;
+        }
         const findUser = await userModel.findOne({email: email.toUpperCase()});
         if(findUser) {
             res.status(404).send("USER ALREADY EXISTS");
