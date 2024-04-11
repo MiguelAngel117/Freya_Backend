@@ -5,7 +5,7 @@ const { tokenSign } = require('../helpers/generateToken');
 const login = async (req, res) =>{
     try {
         const {email, password} = req.body;
-        const user = await userModel.findOne({email});
+        const user = await userModel.findOne({email: email.toUpperCase()});
         if(!user) {
             res.status(404).send("USER NOT FOUND");
             return;
@@ -33,7 +33,7 @@ const login = async (req, res) =>{
 const register = async (req, res) =>{
     try {
         const {name_user, email, password} = req.body;
-        const findUser = await userModel.findOne({email});
+        const findUser = await userModel.findOne({email: email.toUpperCase()});
         if(findUser) {
             res.status(404).send("USER ALREADY EXISTS");
             return;
@@ -41,7 +41,7 @@ const register = async (req, res) =>{
         const encryptedPass = await encrypt(password);
         const user = new userModel({
             name_user,
-            email,
+            email: email.toUpperCase(),
             password: encryptedPass,
             status_user: true
         });
