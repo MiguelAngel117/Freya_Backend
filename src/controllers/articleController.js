@@ -14,12 +14,13 @@ const getArticles = async (req, res) => {
 
 const uploadImage = async (req, res)=>{
     try {
-        const result = await cloudinary.uploader.upload(req.file.path,{
-            public_id: `Nothing`,
-            with: 500,
-            height: 500,
-            crop: 'fill'
-        })
+        console.log(req.file); // Log req.file to see if it is defined
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          public_id: `Nothing`,
+          with: 500,
+          height: 500,
+          crop: 'fill'
+        });
         res.status(201).send(result);
     } catch (error) {
         res.status(500).send("ERRROR UPLOAD IMAGE");
