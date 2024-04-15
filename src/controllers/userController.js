@@ -3,21 +3,23 @@ const User = require('../models/user');
 const createUser = async (req, res) => {
     try {
         const user = new User({
-            name_user: req.body.name_user,
+            first_name: req.body.first_name,
+            second_name: req.body.second_name,
             type_document: req.body.type_document,
             number_document: req.body.number_document,
-            address: req.body.address,
-            city: req.body.city,
-            country: req.body.country,
-            department: req.body.department,
+            birth_day: req.body.birth_day,
+            gender: req.body.gender,
             number_phone: req.body.number_phone,
             email: req.body.email,
-            password: req.body.password,
-            status_user: true
+            password: req.body.password
         });
-    
-        const savedUser = await user.save();
-        res.status(201).send(savedUser);
+        const existUser = await User.findOne({ email: req.body.email});
+        if(existUser){
+            res.status(400).send("USER ALREADY EXIST");
+        }else{
+            const savedUser = await User.create(req.body);
+            res.status(201).send(savedUser);
+        }
     } catch (error) {
         console.error("Error creating user:", error);
         res.status(500).send("Internal server error");
@@ -55,7 +57,16 @@ const getUserById = async (req, res) => {
 // Update a user by ID
 const updateUser = async (req, res) => {
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const data = {
+            first_name: req.body.first_name,
+            second_name: req.body.second_name,
+            type_document: req.body.type_document,
+            number_document: req.body.number_document,
+            birth_day: req.body.birth_day,
+            gender: req.body.gender,
+            number_phone: req.body.number_phone,
+        }
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, data, { new: true });
         if (!updatedUser) {
             res.status(404).send("User not found");
         } else {
@@ -70,11 +81,12 @@ const updateUser = async (req, res) => {
 // Delete a user by ID
 const deleteUser = async (req, res) => {
     try {
+        console.log("req.params.id");
         const deletedUser = await User.findByIdAndDelete(req.params.id);
         if (!deletedUser) {
             res.status(404).send("User not found");
         } else {
-            res.send(deletedUser);
+            res.status(200).send(deletedUser);
         }
     } catch (error) {
         console.error("Error deleteUser:", error);

@@ -5,7 +5,7 @@ const {
     updateCategory, 
     deleteCategory,
     searchCategoriesByName, 
-    sortCategories} = require('../controllers/categoriesController');
+    sortCategories} = require('../../controllers/categoriesController');
 
 const express = require('express');
 const router = express.Router();
@@ -21,4 +21,5 @@ router.put(`/:id`, updateCategory);
 
 router.delete(`/:id`, deleteCategory);
 
-module.exports = (app) => app.use("/api/v1/categories", router);
+//module.exports = (app) => app.use("/api/v1/categories", router);
+module.exports = router;

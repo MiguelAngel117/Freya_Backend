@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const cors= require('cors');
+const cors = require('cors');
 
 require('dotenv/config');
 
@@ -11,28 +11,32 @@ app.options('*', cors())
 
 //Middleware
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
 
 //Routes 
-const authRoute = require('./routes/auth');
-const storesRoute = require('./routes/stores');
-const articlesRoute = require('./routes/articles');
-const usersRoute = require('./routes/users');
-const categoriesRoute = require('./routes/categories');
-const salesRoute = require('./routes/sales');
-const purchasesRoute = require('./routes/purchases');
-const jobsRoute = require('./routes/jobs');
+const authRoute = require('./routes/api/auth');
+const storesRoute = require('./routes/api/stores');
+const articlesRoute = require('./routes/api/articles');
+const usersRoute = require('./routes/api/users');
+const categoriesRoute = require('./routes/api/categories');
+const salesRoute = require('./routes/api/sales');
+const purchasesRoute = require('./routes/api/purchases');
+const jobsRoute = require('./routes/api/jobs');
 
 const api = process.env.BASE_URL;
 
-authRoute(app);
-storesRoute(app);
-articlesRoute(app);
+app.use(require('./routes'));
+
+//authRoute(app);
+//storesRoute(app);
+/*articlesRoute(app);
 usersRoute(app);
 categoriesRoute(app);
 salesRoute(app);
 purchasesRoute(app);
-jobsRoute(app);
+jobsRoute(app);*/
+
 
 //app.use(`${api}/auth`, authRoute);
 //app.use(`${api}/stores`, storesRoute);

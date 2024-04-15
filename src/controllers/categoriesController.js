@@ -1,8 +1,8 @@
-const {Category} = require('../models/category');
+const categoryModel = require('../models/category');
 
 const getCategories = async (req, res) => {
     try {
-        const categories = await Category.find();
+        const categories = await categoryModel.find();
         res.status(200).json(categories);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -12,7 +12,7 @@ const getCategories = async (req, res) => {
 const createCategory = async (req, res) => {
     try {
         const { name_category, url_icon, url_image } = req.body;
-        const newCategory = new Category({ name_category, url_icon, url_image });
+        const newCategory = new categoryModel({ name_category, url_icon, url_image });
         const savedCategory = await newCategory.save();
         res.status(201).json(savedCategory);
     } catch (error) {
@@ -24,7 +24,7 @@ const getCategory = async (req, res) => {
     try {
         const id = req.params.id;
         if(id.length === 24){
-            const category = await Category.findById(req.params.id);
+            const category = await categoryModel.findById(req.params.id);
             if (!category) {
                 res.status(404).send("Category not found");
                 return;
@@ -43,7 +43,7 @@ const updateCategory = async(req, res) =>{
     try {
         const { id } = req.params;
         const { name_category, url_icon, url_image } = req.body;
-        const updatedCategory = await Category.findByIdAndUpdate(id, { name_category, url_icon, url_image }, { new: true });
+        const updatedCategory = await categoryModel.findByIdAndUpdate(id, { name_category, url_icon, url_image }, { new: true });
         if(!updatedCategory){
             return res.status(404).send("CATEGORY NOT FOUND");
         }
@@ -56,7 +56,7 @@ const updateCategory = async(req, res) =>{
 const deleteCategory = async(req, res) => {
     try {
         const { id } = req.params;
-        await Category.findByIdAndDelete(id);
+        await categoryModel.findByIdAndDelete(id);
         res.status(200).json({ message: 'Category deleted successfully' });
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -65,7 +65,7 @@ const deleteCategory = async(req, res) => {
 
 const sortCategories =  async (req, res) => {
     try {
-        const categories = await Category.find().sort({ name_category: 1 }); // Orden ascendente
+        const categories = await categoryModel.find().sort({ name_category: 1 }); // Orden ascendente
         res.status(200).json(categories);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -79,7 +79,7 @@ const searchCategoriesByName = async (req, res) => {
             res.status(400).send("A search term is required");
             return;
         }
-        const matchedCategory = await Category.find({ name_category: { $regex: searchTerm, $options: 'i' } });
+        const matchedCategory = await categoryModel.find({ name_category: { $regex: searchTerm, $options: 'i' } });
         if (matchedCategory.length === 0) {
             return res.status(404).send("No categories found matching the search");
         }

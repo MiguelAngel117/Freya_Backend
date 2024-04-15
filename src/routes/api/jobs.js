@@ -4,7 +4,7 @@ const {createJob,
     updateJobById,
     deleteJobById,
     getJobsSortedByTitle,
-    searchJobsByTitle} = require('../controllers/jobsController');
+    searchJobsByTitle} = require('../../controllers/jobsController');
 const express = require('express');
 const router = express.Router();
 
@@ -19,4 +19,5 @@ router.delete('/:id', deleteJobById);
 
 router.put('/:id', updateJobById);
 
-module.exports = (app) => app.use("/api/v1/jobs", router);
+//module.exports = (app) => app.use("/a../jobs", router);
+module.exports = router;

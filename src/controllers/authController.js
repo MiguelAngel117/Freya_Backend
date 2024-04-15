@@ -48,12 +48,10 @@ const register = async (req, res) =>{
         }
         const encryptedPass = await encrypt(password);
         const user = new userModel({
-            name_user,
             email: email.toUpperCase(),
-            password: encryptedPass,
-            status_user: true
+            password: encryptedPass
         });
-        const savedUser = await user.save();
+        const savedUser = await userModel.create(req.body);
         res.status(201).send(savedUser);
     } catch (error) {
         console.error("Error register user:", error);
@@ -61,4 +59,46 @@ const register = async (req, res) =>{
     }
 };
 
-module.exports = {login, register};
+const changeStatus = async(req, res) =>{
+    try {
+        const id = req.params.id;
+        if(id.length === 24){
+            const user = await userModel.findByIdAndUpdate(id, {status_user: false}, { new: true });
+            if (!user) {
+                return res.status(404).send("User not found to update");
+            }
+            res.status(200).send(user.status_user);
+        }else{
+            res.status(400).send("INCOMPLETE ID");
+        }
+    } catch (error) {
+        res.status(500).send("Error updating user by ID - Internal Server Error");
+    }
+}
+
+const changePassword = async (req, res) => {
+    try {
+        const id = req.params.id;
+        if(id.length === 24){
+            const user = await userModel.findById(id);
+            const checkPassword = await compare(req.body.oldPassword, user.password);
+            if(checkPassword){
+                const newPassword = await encrypt(req.body.newPassword);
+                const userUp = await userModel.findByIdAndUpdate(id, {password: newPassword}, { new: true });
+                if (!user) {
+                    return res.status(404).send("User not found to update");
+                }
+                res.status(200).send(userUp);
+            }else{
+                res.status(400).send("THE NEW PASSWORD DOES NOT MATCH THE OLD ONE");
+            }
+            
+        }else{
+            res.status(400).send("INCOMPLETE ID");
+        }
+    } catch (error) {
+        res.status(500).send("Error updating user by ID - Internal Server Error");
+    }
+}
+
+module.exports = {login, register, changeStatus, changePassword};

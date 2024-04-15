@@ -16,7 +16,6 @@ const tokenSign = async (user) => {
     } catch (error) {
         return "TOKEN EXPIRED";
     }
-    
 };
 
 const verifyToken = async (token)=>{

@@ -1,6 +1,8 @@
-const testServer = require('../src/helpers/testServer');
-const storesRoute = require('../src/routes/stores');
-const request = testServer(storesRoute);
+//const testServer = require('../src/helpers/testServer');
+//const storesRoute = require('../src/routes/api/stores');
+//const request = testServer(storesRoute);
+const app = require('../src/app');
+const request = require('supertest')
 const mongoose = require('mongoose');
 require('dotenv/config');
 
@@ -15,7 +17,7 @@ describe("Prueba de obtención de todas las tiendas", () => {
     describe('Get stores', () => {
         let response;
         beforeEach(async()=>{
-            response = await request.get("/api/v1/stores/").send();
+            response = await request(app).get("/api/v1/stores/").send();
         })
         it("Debe responder con estado 200", async () => {         
             expect(response.status).toBe(200);

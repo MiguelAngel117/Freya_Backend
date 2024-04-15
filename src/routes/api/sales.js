@@ -1,4 +1,4 @@
-const {getSales, createSale} = require('../controllers/saleController');
+const {getSales, createSale} = require('../../controllers/saleController');
 const express = require('express');
 const router = express.Router();
 
@@ -8,4 +8,5 @@ router.get(`/`,getSales);
 //Crear nueva venta
 router.post(`/`, createSale);
 
-module.exports = (app) => app.use("/api/v1/sales", router);
+//module.exports = (app) => app.use("/a../sales", router);
+module.exports = router;

@@ -8,7 +8,7 @@ const {
     deleteStoreById, 
     getStoresSortedByName, 
     searchStoresByName 
-} = require('../controllers/storesController');
+} = require('../../controllers/storesController');
 
 router.get('/sorted', getStoresSortedByName);
 router.get('/search', searchStoresByName);
@@ -20,5 +20,5 @@ router.put('/:id', updateStoreById);
 
 router.delete('/:id', deleteStoreById);
 
-//module.exports = router;
-module.exports = (app) => app.use("/api/v1/stores", router);
+module.exports = router;
+//module.exports = (app) => app.use("/api/v1/stores", router);
