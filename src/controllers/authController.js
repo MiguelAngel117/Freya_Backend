@@ -35,7 +35,7 @@ const login = async (req, res) =>{
 
 const register = async (req, res) =>{
     try {
-        const {name_user, email, password} = req.body;
+        const {email, password} = req.body;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             res.status(400).send("INVALID EMAIL FORMAT");
@@ -47,11 +47,18 @@ const register = async (req, res) =>{
             return;
         }
         const encryptedPass = await encrypt(password);
-        const user = new userModel({
+        const user = {
+            first_name: req.body.first_name,
+            second_name: req.body.second_name,
+            type_document: req.body.type_document,
+            number_document: req.body.number_document,
+            birth_day: req.body.birth_day,
+            gender: req.body.gender,
+            number_phone: req.body.number_phone,
             email: email.toUpperCase(),
             password: encryptedPass
-        });
-        const savedUser = await userModel.create(req.body);
+        };
+        const savedUser = await userModel.create(user);
         res.status(201).send(savedUser);
     } catch (error) {
         console.error("Error register user:", error);
