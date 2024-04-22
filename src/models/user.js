@@ -18,6 +18,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "user"
     },
+    shiping_address: [{
+        department: String, 
+        municipality:String,
+        address:String,
+        neighborhood: String,
+        aditional_info:String,
+        addressee: String,
+        number_phone: String
+    }],
 },{
     timestamps: true,
     versionKey: false

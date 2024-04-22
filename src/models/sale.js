@@ -12,7 +12,7 @@ const saleSchema = mongoose.Schema({
         },
         size: String,
         quantity: { type: Number, default: 0 },
-        total: String
+        total: Number
     }],
     totalSale: String,
     statusSale: String

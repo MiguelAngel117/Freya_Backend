@@ -19,7 +19,7 @@ describe("Prueba de obtención de todas las tiendas", () => {
         beforeEach(async()=>{
             response = await request(app).get("/api/v1/stores/").send();
         })
-        it("Debe responder con estado 200", async () => {         
+        it("Debe responder con estado 200", async  () => {         
             expect(response.status).toBe(200);
         });
         it("La peticion nos devuelve un array de Stores", async () => {         

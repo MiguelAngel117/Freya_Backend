@@ -48,7 +48,7 @@ jobsRoute(app);*/
 //app.use(`${api}/jobs`, jobsRoute);
 
 app.get("/", (req, res) => {
-    res.send("La App está corriendo");
+    res.send("La App está corriendo").status(200);
 });
 
 module.exports = app;

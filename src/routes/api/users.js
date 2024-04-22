@@ -12,7 +12,7 @@ router.get('/', checkAuth, checkRoleAuth(['admin']),getUsers);
 //router.post('/', checkAuth, checkRoleAuth(['admin']), createUser);
 router.get('/:id', checkAuth, checkRoleAuth(['admin']), getUserById);
 router.put('/:id', checkAuth, checkRoleAuth(['admin','user']), updateUser);
-router.delete('/:id', deleteUser);
+router.delete('/:id',checkAuth, checkRoleAuth(['admin']), deleteUser);
 
 //module.exports = (app) => app.use("/a../users", router);
 module.exports = router;
