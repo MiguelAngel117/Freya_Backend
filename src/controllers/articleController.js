@@ -259,4 +259,44 @@ const searchArticlesByPriceRange = async (req, res) => {
     }
 }
 
-module.exports = {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName, searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage};
+const getArticleByGender = async (req, res)=>{
+    try {
+        const searchTerm = req.query.gender;
+        if (!searchTerm) {
+            return res.status(400).send("Se requiere un término de búsqueda");
+        }
+        
+        const filterArticles = await Article.find({gender: searchTerm});
+
+        if (filterArticles.length === 0) {
+            return res.status(404).send("No se encontraron artículos que coincidan con la búsqueda");
+        }
+
+        res.status(200).send(filterArticles);
+    } catch (error) {
+        console.error("Error al buscar artículos por nombre:", error);
+        res.status(500).send("Error al buscar artículos por nombre - Error interno del servidor");
+    }
+}
+
+const getArticleByGenderAndCategory = async (req, res)=>{
+    try {
+        const gender = req.query.gender;
+        const category = req.query.category;
+
+        if (!gender && !category) {
+            return res.status(400).send("Se requieren dos terminos de búsqueda");
+        }
+        const articlesFind = await Article.find({gender, category});
+
+        if (articlesFind.length === 0) {
+            return res.status(404).send("No se encontraron artículos que coincidan con la búsqueda");
+        }
+        res.status(200).send(articlesFind);
+    } catch (error) {
+        console.error("Error al buscar artículos por nombre y/o categoría:", error);
+        res.status(500).send("Error al buscar artículos por nombre y/o categoría - Error interno del servidor");
+    }
+}
+
+module.exports = {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName, searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage, getArticleByGender, getArticleByGenderAndCategory};
