@@ -39,7 +39,7 @@ const uploadImage = async (req, res) => {
 
 const createArticle = async (req, res) => {
     try {
-        const { code_article, name_article, retail_price, medium_price, wholesale_price, description_article, images, stock, size_guide, category, available, gender } = req.body;
+        const { code_article, name_article, retail_price, medium_price, wholesale_price, description_article, images, stock, category, available, gender } = req.body;
 
         if(category.length === 24){
             const existingCategory = await Category.findById(category);
@@ -58,8 +58,7 @@ const createArticle = async (req, res) => {
                 stock: stock.map(([size, quantity]) => ({ size, quantity })),
                 category,
                 available,
-                gender,
-                size_guide
+                gender
             });
             const savedArticle = await article.save();
             res.status(201).send(savedArticle);

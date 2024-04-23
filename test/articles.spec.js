@@ -37,7 +37,6 @@ describe("Prueba del modelo de artículos", () => {
                 category: "6612e313476d1bc315bac987",
                 stock: [["S", 10], ["M", 15], ["L", 20]],
                 gender: "male",
-                size_guide: "URL",
                 color: "blue"
             };
             responseRegister = await request(app).post("/api/v1/articles/").send(articleData).set(headerAdmin);
