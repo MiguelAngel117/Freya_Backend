@@ -1,6 +1,3 @@
-//const testServer = require('../src/helpers/testServer');
-//const storesRoute = require('../src/routes/api/stores');
-//const request = testServer(storesRoute);
 const app = require('../src/app');
 const request = require('supertest')
 const mongoose = require('mongoose');

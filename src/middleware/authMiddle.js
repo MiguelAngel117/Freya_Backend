@@ -2,6 +2,7 @@ const {verifyToken} = require('../helpers/generateToken');
 
 const checkAuth = async (req, res,next ) => {
     try {
+        console.log(req.headers.authorization);
         const token = req.headers.authorization.split(' ').pop();
         const tokenData = await verifyToken(token); 
         console.log(tokenData);
