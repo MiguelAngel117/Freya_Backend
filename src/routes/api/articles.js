@@ -1,23 +1,23 @@
     const {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName,searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage} = require('../../controllers/articleController');
-    const {checkAuth} = require('../../middleware/authMiddle');
+    const checkAuth = require('../../middleware/authMiddle');
+    const checkRoleAuth = require('../../middleware/roleAuth');
     const express = require('express');
     const router = express.Router();
     const multer = require('../../middleware/multer');
 
     //Obtener todos los articulos
-    router.get('/search', searchArticlesByName);
+    router.get('/search', checkAuth, checkRoleAuth(['admin']), searchArticlesByName);
     router.get('/searchAC', searchArticlesByNameAndCategory);
     router.get('/searchArticleByCategory', searchArticlesByCategory);
     router.get('/searchPriceRange', searchArticlesByPriceRange);
-    router.get('/', getArticles);
-    router.get('/:id', getArticle);
+    router.get('/', checkAuth, checkRoleAuth(['admin']),getArticles);
+    router.get('/:id', checkAuth, checkRoleAuth(['admin']), getArticle);
 
-    router.post('/', createArticle);
+    router.post('/', checkAuth, checkRoleAuth(['admin']), createArticle);
     router.post('/upload', multer.single('image'), uploadImage);
 
-    router.delete('/:id', deleteArticleById);
+    router.delete('/:id', checkAuth, checkRoleAuth(['admin']), deleteArticleById);
 
-    router.put('/:id', setArticle);
+    router.put('/:id', checkAuth, checkRoleAuth(['admin']),setArticle);
 
-    //module.exports = (app) => app.use("/api/v1/articles", router);
     module.exports = router;

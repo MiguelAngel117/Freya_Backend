@@ -11,9 +11,7 @@ const getCategories = async (req, res) => {
 
 const createCategory = async (req, res) => {
     try {
-        const { name_category, url_icon, url_image } = req.body;
-        const newCategory = new categoryModel({ name_category, url_icon, url_image });
-        const savedCategory = await newCategory.save();
+        const savedCategory = await categoryModel.create(req.body)
         res.status(201).json(savedCategory);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -56,8 +54,12 @@ const updateCategory = async(req, res) =>{
 const deleteCategory = async(req, res) => {
     try {
         const { id } = req.params;
-        await categoryModel.findByIdAndDelete(id);
+        const result = await categoryModel.findByIdAndDelete(id);
+        if(!result) {
+            return res.status(404).send("Category Not Found");
+        }
         res.status(200).json({ message: 'Category deleted successfully' });
+
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

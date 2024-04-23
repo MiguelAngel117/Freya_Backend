@@ -7,19 +7,21 @@ const {
     searchCategoriesByName, 
     sortCategories} = require('../../controllers/categoriesController');
 
+const checkAuth = require('../../middleware/authMiddle');
+const checkRoleAuth = require('../../middleware/roleAuth');
+
 const express = require('express');
 const router = express.Router();
 
-router.get(`/sorted`, sortCategories);
-router.get(`/search`, searchCategoriesByName);
-router.get(`/`, getCategories);
-router.get(`/:id`, getCategory);
+router.get(`/sorted`, checkAuth, checkRoleAuth(['admin','user']), sortCategories);
+router.get(`/search`, checkAuth, checkRoleAuth(['admin','user']), searchCategoriesByName);
+router.get(`/`, checkAuth, checkRoleAuth(['admin','user']),getCategories);
+router.get(`/:id`, checkAuth, checkRoleAuth(['admin','user']), getCategory);
 
-router.post(`/`, createCategory);
+router.post(`/`, checkAuth, checkRoleAuth(['admin']), createCategory);
 
-router.put(`/:id`, updateCategory);
+router.put(`/:id`,checkAuth, checkRoleAuth(['admin']), updateCategory);
 
-router.delete(`/:id`, deleteCategory);
+router.delete(`/:id`, checkAuth, checkRoleAuth(['admin']), deleteCategory);
 
-//module.exports = (app) => app.use("/api/v1/categories", router);
 module.exports = router;

@@ -18,8 +18,7 @@ const getStores = async (req,res) =>{
     try {
         const listStores = await storeModel.find();
         if(listStores.length === 0){
-            res.status(200).send("NO STORES REGISTERED");
-            return;
+            return res.status(200).send("NO STORES REGISTERED");
         }
         res.status(200).send(listStores);
     } catch (error) {
