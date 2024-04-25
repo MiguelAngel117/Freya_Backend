@@ -287,7 +287,6 @@ const getArticleByGenderAndCategory = async (req, res)=>{
         if (!gender && !category) {
             return res.status(400).send("Se requieren dos terminos de búsqueda");
         }
-        //A
         const articlesFind = await Article.find({gender, category});
 
         if (articlesFind.length === 0) {
