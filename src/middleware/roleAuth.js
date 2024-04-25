@@ -13,7 +13,7 @@ const checkRoleAuth = (roles) => async (req, res,next ) => {
             res.status(409).send("No tienes permisos");
         }
     } catch (error) {
-        
+        res.status(500).send("Error en la validación del Rol");
     }
         
 };
