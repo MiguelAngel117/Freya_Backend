@@ -12,7 +12,7 @@ const login = async (req, res) =>{
         }
         const user = await userModel.findOne({email: email.toUpperCase()});
         if(!user) {
-            res.status(404).send("USER NOT FOUND");
+            res.status(400).send("USER NOT FOUND");
             return;
         }
         const checkPassword = await compare(password, user.password);
@@ -43,7 +43,7 @@ const register = async (req, res) =>{
         }
         const findUser = await userModel.findOne({email: email.toUpperCase()});
         if(findUser) {
-            res.status(404).send("USER ALREADY EXISTS");
+            res.status(400).send("USER ALREADY EXISTS");
             return;
         }
         const encryptedPass = await encrypt(password);

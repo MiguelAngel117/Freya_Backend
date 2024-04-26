@@ -9,7 +9,7 @@ const createSale = async (req, res) => {
             return res.status(400).send("Invalid user ID length");
         }
 
-        const user = await User.findById(item.user_id);
+        const user = await User.findById(user_id);
         if (!user) {
             return res.status(404).send("User not found");
         }
@@ -79,24 +79,84 @@ const getSaleById = async (req, res) => {
     }
 }
 
+const getSaleByUserId = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+
+        if (user_id.length !== 24) {
+            return res.status(400).send("Invalid user ID length");
+        }
+    
+        const sales = await Sale.find({ user_id });
+
+        if (!sales || sales.length === 0) {
+            return res.status(404).send("No sales found for this user ID");
+        }
+
+        res.status(200).send(sales);
+    } catch (error) {
+        console.error("Error finding sales by user ID:", error);
+        res.status(500).send("Error finding sales by user ID - Internal Server Error");
+    }
+};
+
+
 const updateSaleById = async (req, res) => {
     try {
-        const id = req.params.id;
+        const {articles } = req.body;
+        const {id} = req.params;
         if (id.length !== 24) {
-            res.status(400).send("Invalid ID length");
-            return;
+            return res.status(400).send("Invalid sale ID length");
         }
-        const updatedSale = await Sale.findByIdAndUpdate(id, req.body, { new: true });
-        if (!updatedSale) {
-            res.status(404).send("Sale not found to update");
-            return;
+
+        const sale = await Sale.findById(id);
+        if (!sale) {
+            return res.status(404).send("Sale not found");
         }
-        res.status(200).send(updatedSale);
+
+        for (const item of articles) {
+            if (item.article_id.length !== 24) {
+                return res.status(400).send("Invalid article ID length");
+            }
+
+            const article = await Article.findById(item.article_id);
+            if (!article) {
+                return res.status(404).send("Article not found");
+            }
+
+            const sizeIndex = article.stock.findIndex(stockItem => stockItem.size === item.size);
+            if (sizeIndex === -1) {
+                return res.status(400).send(`Size ${item.size} not found for article ${item.article_id}`);
+            }
+
+            // Calculate the difference in quantity to update stock
+            const currentQuantity = article.stock[sizeIndex].quantity;
+            const quantityDifference = item.quantity - currentQuantity;
+
+            // Update article stock
+            article.stock[sizeIndex].quantity = item.quantity;
+            await article.save();
+
+            // Update total sale based on quantity difference
+            sale.totalSale += quantityDifference * article.price;
+        }
+
+        // Update sale status if provided
+        if (req.body.statusSale) {
+            sale.statusSale = req.body.statusSale;
+        }
+
+        // Save updated sale
+        await sale.save();
+
+        res.status(200).send(sale);
     } catch (error) {
-        console.error("Error updating sale by ID:", error);
-        res.status(500).send("Error updating sale by ID - Internal Server Error");
+        console.error("Error updating sale:", error);
+        res.status(500).send("Error updating sale - Internal Server Error");
     }
 }
+
+
 
 const deleteSaleById = async (req, res) => {
     try {
@@ -117,4 +177,4 @@ const deleteSaleById = async (req, res) => {
     }
 }
 
-module.exports = { createSale, getSales, getSaleById, updateSaleById, deleteSaleById };
+module.exports = { createSale, getSales, getSaleById, updateSaleById, deleteSaleById, getSaleByUserId };
