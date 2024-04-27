@@ -277,11 +277,12 @@ const searchArticlesByPriceRange = async (req, res) => {
 const getArticleByGender = async (req, res)=>{
     try {
         const searchTerm = req.query.gender;
+        
         if (!searchTerm) {
             return res.status(400).send("Se requiere un término de búsqueda");
         }
-        
-        const filterArticles = await Article.find({gender: searchTerm});
+        const term = (searchTerm == "F") ? "FEMALE" : "MALE";
+        const filterArticles = await Article.find({gender: term});
 
         if (filterArticles.length === 0) {
             return res.status(404).send("No se encontraron artículos que coincidan con la búsqueda");
