@@ -17,7 +17,7 @@ app.use(morgan('tiny'));
 app.use(require('./routes'));
 
 app.get("/", (req, res) => {
-    res.send("La App está corriendo").status(200);
+    res.send("La App está corriendo👀👍🚀🚀").status(200);
 });
 
 module.exports = app;

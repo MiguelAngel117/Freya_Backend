@@ -35,11 +35,25 @@ const uploadImage = async (req, res) => {
       console.log(error);
     }
   };
-  
+
+  const uploadImageN = async (req, res)=>{
+    try {
+        console.log(req.file); // Log req.file to see if it is defined
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          public_id: `Nothing`,
+          with: 500,
+          height: 500,
+          crop: 'fill'
+        });
+        res.status(201).send(result);
+    } catch (error) {
+        res.status(500).send("ERRROR UPLOAD IMAGE");
+    }
+}
 
 const createArticle = async (req, res) => {
     try {
-        const { code_article, name_article, retail_price, medium_price, wholesale_price, description_article, images, stock, category, available, gender } = req.body;
+        const { code_article, name_article, retail_price, medium_price, wholesale_price, description_article, images, stock, category, available, gender, color } = req.body;
 
         if(category.length === 24){
             const existingCategory = await Category.findById(category);
@@ -58,7 +72,8 @@ const createArticle = async (req, res) => {
                 stock: stock.map(([size, quantity]) => ({ size, quantity })),
                 category,
                 available,
-                gender
+                gender, 
+                color
             });
             const savedArticle = await article.save();
             res.status(201).send(savedArticle);
@@ -299,4 +314,4 @@ const getArticleByGenderAndCategory = async (req, res)=>{
     }
 }
 
-module.exports = {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName, searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage, getArticleByGender, getArticleByGenderAndCategory};
+module.exports = {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName, searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage, getArticleByGender, getArticleByGenderAndCategory, uploadImageN};

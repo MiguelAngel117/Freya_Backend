@@ -1,4 +1,4 @@
-    const {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName,searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage, getArticleByGender, getArticleByGenderAndCategory} = require('../../controllers/articleController');
+    const {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName,searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage, getArticleByGender, getArticleByGenderAndCategory, uploadImageN} = require('../../controllers/articleController');
     const checkAuth = require('../../middleware/authMiddle');
     const checkRoleAuth = require('../../middleware/roleAuth');
     const express = require('express');
@@ -15,6 +15,7 @@
     router.get('/:id', getArticle);
 
     router.post('/', checkAuth, checkRoleAuth(['admin']), createArticle);
+    router.post('/uploadCloud', multer.single('image'), uploadImageN);
     router.post('/upload', multer.single('image'), uploadImage);
 
     router.delete('/:id', checkAuth, checkRoleAuth(['admin']), deleteArticleById);

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const storeShema = new mongoose.Schema({
     name_store: String,
     address: String,
-    coordinates: {},
+    coordinates: {} ,
     department: String,
     city: String, 
     images:{}

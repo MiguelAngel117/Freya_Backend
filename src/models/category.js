@@ -5,7 +5,11 @@ const categorySchema = mongoose.Schema({
     description_category: String,
     url_icon: String, 
     url_image: String,
-    url_size_guide: String
+    url_size_guide_fem: String,
+    url_size_guide_male: String
+},{
+    timestamps: true,
+    versionKey: false
 })
 
 module.exports = mongoose.model('categories', categorySchema);
