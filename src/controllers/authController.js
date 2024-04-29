@@ -108,4 +108,8 @@ const changePassword = async (req, res) => {
     }
 }
 
-module.exports = {login, register, changeStatus, changePassword};
+const sendStatus = async(req, res)=>{
+    res.status(200).send("USUARIO CON SESIÓN ACTIVA");
+}
+
+module.exports = {login, register, changeStatus, changePassword, sendStatus};
