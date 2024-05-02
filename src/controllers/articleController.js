@@ -17,11 +17,8 @@ const uploadImage = async (req, res) => {
       if (!req.body.image) {
         return res.status(400).send('No se proporcionó ninguna imagen en base64');
       }
-  
-      // Obtener la imagen en base64 desde el cuerpo de la solicitud
       const base64Image = req.body.image;
   
-      // Subir la imagen a Cloudinary
       const result = await cloudinary.uploader.upload(base64Image, {
         public_id: `Product Freya`,
         folder: 'articles',
@@ -38,11 +35,12 @@ const uploadImage = async (req, res) => {
   };
   
 
-  const uploadImageN = async (req, res)=>{
+const uploadImageN = async (req, res)=>{
     try {
         console.log(req.file); // Log req.file to see if it is defined
         const result = await cloudinary.uploader.upload(req.file.path, {
-          public_id: `Nothing`,
+          public_id: `${req.file.filename}`,
+          folder: 'articles',
           with: 500,
           height: 500,
           crop: 'fill'

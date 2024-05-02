@@ -16,7 +16,7 @@
 
     router.post('/', checkAuth, checkRoleAuth(['admin']), createArticle);
     router.post('/uploadCloud', multer.single('image'), uploadImageN);
-    router.post('/upload', uploadImage);
+    router.post('/upload', multer.single('image'), uploadImage);
 
     router.delete('/:id', checkAuth, checkRoleAuth(['admin']), deleteArticleById);
 
