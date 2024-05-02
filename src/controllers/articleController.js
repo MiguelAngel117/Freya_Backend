@@ -14,20 +14,21 @@ const getArticles = async (req, res) => {
 
 const uploadImage = async (req, res) => {
     try {
-      if (!req.file) {
-        return res.status(400).send('No se proporcionó ningún archivo');
+      if (!req.body.image) {
+        return res.status(400).send('No se proporcionó ninguna imagen en base64');
       }
-      const path = 'base 64 img';
-      const result = await cloudinary.uploader.upload(path, {
-        public_id: `nombre_unico_para_la_imagen`,
+  
+      // Obtener la imagen en base64 desde el cuerpo de la solicitud
+      const base64Image = req.body.image;
+  
+      // Subir la imagen a Cloudinary
+      const result = await cloudinary.uploader.upload(base64Image, {
+        public_id: `Product Freya`,
+        folder: 'articles',
         width: 500,
         height: 500,
         crop: 'fill'
       });
-  
-      // Eliminar el archivo temporal después de subirlo a Cloudinary
-      const fs = require('fs');
-      fs.unlinkSync(req.file.path);
   
       res.status(201).send(result);
     } catch (error) {
@@ -35,6 +36,7 @@ const uploadImage = async (req, res) => {
       console.log(error);
     }
   };
+  
 
   const uploadImageN = async (req, res)=>{
     try {
