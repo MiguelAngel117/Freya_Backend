@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - freyaBackEnd
+name: Build and deploy Node.js app to Azure Web App - FreyaBackend
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: '20.x'
 
       - name: npm install, build, and test
         run: |
@@ -51,15 +51,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3596AF9D34514ADDB307B71E89E98CBD }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D3A7AA4358714B8381B3560114C7B37C }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8F8A666F135446CF953F4D86D157C721 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7F21E452CB5F478D9130C8006EC51E88 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_179135B01C9F4301A13CCF0C6E7CA43C }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_34672E7091804000A04D12A1BCB3B853 }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'freyaBackEnd'
+          app-name: 'FreyaBackend'
           slot-name: 'Production'
           package: .
           
