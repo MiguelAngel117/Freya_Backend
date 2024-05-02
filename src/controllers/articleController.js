@@ -20,7 +20,7 @@ const uploadImage = async (req, res) => {
       const base64Image = req.body.image;
   
       const result = await cloudinary.uploader.upload(base64Image, {
-        public_id: `Product Freya`,
+        public_id: Date.now(),
         folder: 'articles',
         width: 500,
         height: 500,
@@ -60,6 +60,13 @@ const createArticle = async (req, res) => {
             if (!existingCategory) {
                 return res.status(404).send("Category not found");
             }
+
+            let formattedStock;
+            if(stock != undefined){
+                formattedStock = stock.map(([size, quantity]) => ({ size, quantity }));
+            }else{
+                formattedStock = undefined;
+            }
             
             const article = new Article({
                 code_article,
@@ -69,7 +76,7 @@ const createArticle = async (req, res) => {
                 wholesale_price,
                 description_article,
                 images,
-                stock: stock.map(([size, quantity]) => ({ size, quantity })),
+                stock: formattedStock,
                 category,
                 available,
                 gender, 
