@@ -24,8 +24,8 @@ const userSchema = new mongoose.Schema({
         address:String,
         neighborhood: String,
         aditional_info:String,
-        addressee: String,
-        number_phone: String
+        name_addressee: String,
+        number_phone: String,
     }],
 },{
     timestamps: true,

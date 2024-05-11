@@ -110,6 +110,7 @@ const updateSaleById = async (req, res) => {
             return res.status(400).send("Invalid user ID length");
         }
 
+        
         const sale = await Sale.findById(id);
 
         if (!sale) {

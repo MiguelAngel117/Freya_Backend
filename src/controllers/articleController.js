@@ -153,7 +153,6 @@ const setArticle = async (req, res) => {
             }else{
                 formattedStock = undefined;
             }
-
             const updatedArticle = await Article.findByIdAndUpdate(
                 id,
                 {

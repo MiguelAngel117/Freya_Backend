@@ -7,19 +7,13 @@ const createUser = async (req, res) => {
             second_name: req.body.second_name,
             type_document: req.body.type_document,
             number_document: req.body.number_document,
-            birth_day: req.body.birth_day,
             gender: req.body.gender,
-            number_phone: req.body.number_phone,
-            email: req.body.email,
-            password: req.body.password
+            number_phone: req.body.number_phone, 
+            shiping_address: req.body.shiping_address,
+            role: ''
         });
-        const existUser = await User.findOne({ email: req.body.email});
-        if(existUser){
-            res.status(400).send("USER ALREADY EXIST");
-        }else{
-            const savedUser = await User.create(req.body);
-            res.status(201).send(savedUser);
-        }
+        const savedUser = await User.create(user);
+        res.status(201).send(savedUser);
     } catch (error) {
         console.error("Error creating user:", error);
         res.status(500).send("Internal server error");
@@ -39,7 +33,6 @@ const getUsers = async (req, res) => {
     }
 };
 
-// Get a single user by ID
 const getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -54,7 +47,6 @@ const getUserById = async (req, res) => {
     }
 };
 
-// Update a user by ID
 const updateUser = async (req, res) => {
     try {
         const data = {
@@ -65,6 +57,7 @@ const updateUser = async (req, res) => {
             birth_day: req.body.birth_day,
             gender: req.body.gender,
             number_phone: req.body.number_phone,
+            shiping_address: req.body.shiping_address
         }
         const updatedUser = await User.findByIdAndUpdate(req.params.id, data, { new: true });
         if (!updatedUser) {
@@ -78,7 +71,42 @@ const updateUser = async (req, res) => {
     }
 };
 
-// Delete a user by ID
+
+const updateAddress = async (req, res) => {
+    const { id } = req.params;
+    const { id_address, department, municipality, address, neighborhood, aditional_info, name_addressee, number_phone } = req.body;
+    try {
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        const direccionIndex = user.shiping_address.findIndex(dir => dir._id.toString() === id_address);
+
+        if (direccionIndex === -1) {
+            return res.status(404).json({ error: 'Dirección no encontrada' });
+        }
+
+        user.shiping_address[direccionIndex] = {
+            _id: id_address,
+            department,
+            municipality,
+            address,
+            neighborhood,
+            aditional_info,
+            name_addressee,
+            number_phone
+        };
+
+        await user.save();
+
+        return res.status(200).json({ message: 'Dirección actualizada correctamente', user });
+    } catch (error) {
+        console.error('Error al actualizar la dirección:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
 const deleteUser = async (req, res) => {
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);
@@ -125,4 +153,4 @@ const searchUsersByName = async (req, res) => {
     }
 }
 
-module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers, searchUsersByName };
+module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers, searchUsersByName, updateAddress };
