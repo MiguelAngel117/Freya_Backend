@@ -102,61 +102,42 @@ const getSaleByUserId = async (req, res) => {
 
 
 const updateSaleById = async (req, res) => {
+    const { id } = req.params;
+    const { statusSale } = req.body;
+
     try {
-        const {articles } = req.body;
-        const {id} = req.params;
         if (id.length !== 24) {
-            return res.status(400).send("Invalid sale ID length");
+            return res.status(400).send("Invalid user ID length");
         }
 
         const sale = await Sale.findById(id);
+
         if (!sale) {
-            return res.status(404).send("Sale not found");
+            return res.status(404).json({ error: 'Venta no encontrada' });
         }
 
-        for (const item of articles) {
-            if (item.article_id.length !== 24) {
-                return res.status(400).send("Invalid article ID length");
+        if (statusSale === 'CANCELADA' && sale.statusSale !== 'CANCELADA') {
+            for (const article of sale.articles) {
+                const { article_id, size, quantity } = article;
+                await Article.updateOne(
+                    { _id: article_id, 'stock.size': size },
+                    { $inc: { 'stock.$.quantity': quantity } }
+                );
             }
-
-            const article = await Article.findById(item.article_id);
-            if (!article) {
-                return res.status(404).send("Article not found");
-            }
-
-            const sizeIndex = article.stock.findIndex(stockItem => stockItem.size === item.size);
-            if (sizeIndex === -1) {
-                return res.status(400).send(`Size ${item.size} not found for article ${item.article_id}`);
-            }
-
-            // Calculate the difference in quantity to update stock
-            const currentQuantity = article.stock[sizeIndex].quantity;
-            const quantityDifference = item.quantity - currentQuantity;
-
-            // Update article stock
-            article.stock[sizeIndex].quantity = item.quantity;
-            await article.save();
-
-            // Update total sale based on quantity difference
-            sale.totalSale += quantityDifference * article.price;
+            sale.statusSale = statusSale;
+        }else if(statusSale === 'COMPLETA'){
+            sale.statusSale = statusSale;
+            return res.status(200).json({ message: 'Venta Completa' });
+        }else{
+            return res.status(400).json({ error: 'La Venta ya está Cancelada' });
         }
-
-        // Update sale status if provided
-        if (req.body.statusSale) {
-            sale.statusSale = req.body.statusSale;
-        }
-
-        // Save updated sale
         await sale.save();
-
-        res.status(200).send(sale);
+        return res.status(200).json({ message: 'Venta actualizada correctamente', sale });
     } catch (error) {
-        console.error("Error updating sale:", error);
-        res.status(500).send("Error updating sale - Internal Server Error");
+        console.error('Error al actualizar la venta:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
     }
-}
-
-
+};
 
 const deleteSaleById = async (req, res) => {
     try {
