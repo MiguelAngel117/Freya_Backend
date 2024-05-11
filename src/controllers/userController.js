@@ -56,8 +56,7 @@ const updateUser = async (req, res) => {
             number_document: req.body.number_document,
             birth_day: req.body.birth_day,
             gender: req.body.gender,
-            number_phone: req.body.number_phone,
-            shiping_address: req.body.shiping_address
+            number_phone: req.body.number_phone
         }
         const updatedUser = await User.findByIdAndUpdate(req.params.id, data, { new: true });
         if (!updatedUser) {
@@ -71,6 +70,24 @@ const updateUser = async (req, res) => {
     }
 };
 
+const createAddress = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const usuario = await User.findByIdAndUpdate(
+            id,
+            { $push: { shiping_address: req.body } },
+            { new: true }
+        );
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+        return res.status(201).json({ message: 'Dirección creada correctamente', usuario });
+    } catch (error) {
+        console.error('Error al crear la dirección:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
 
 const updateAddress = async (req, res) => {
     const { id } = req.params;
@@ -153,4 +170,4 @@ const searchUsersByName = async (req, res) => {
     }
 }
 
-module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers, searchUsersByName, updateAddress };
+module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers, searchUsersByName, updateAddress, createAddress };
