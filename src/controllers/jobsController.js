@@ -1,5 +1,9 @@
 const Job = require('../models/job');
+const multer = require('multer');
 const transporter = require('../middleware/nodeMailer');
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const createJob = async (req, res) => {
     try {
@@ -17,18 +21,65 @@ const createJob = async (req, res) => {
 
 const uploadCV = async (req, res) => {
     try {
-      const {to, subject, text } = req.body;
-
-      const mailOptions = {
+        const {subject, email, name_employee, number_phone, title, position, salary, requeriments, ubication } = req.body;
+        console.log(req.file.path);
+        const mailToAdmin = {
+            from: 'freyacolboy@gmail.com',
+            to: 'motavitamiguel3@gmail.com',
+            subject: subject,
+            html: `
+                <h1>Hola Administrador,</h1>
+                <p>El empleado ${name_employee} se ha postulado al puesto de ${title}.</p>
+                <p>A continuación, se detallan los datos proporcionados:</p>
+                <ul>
+                <li>Nombre del empleado: ${name_employee}</li>
+                <li>Teléfono de contacto: ${number_phone}</li>
+                <li>Correo de contacto: ${email}</li>
+                <li>Posición solicitada: ${position}</li>
+                <li>Salario: ${salary}</li>
+                <li>Ubicación: ${ubication}</li>
+                </ul>
+                <p>Requerimientos del puesto:</p>
+                <p>${requeriments}</p>
+                <p>Por favor, ponte en contacto con el empleado para proporcionar más detalles.</p>
+                <p>Atentamente,</p>
+                <p>Sistema Freya</p>
+            `,
+            attachments: {
+                filename: req.file.filename,
+                path: req.file.path
+            }
+      };
+    
+      const mailToApplicant = {
         from: 'freyacolboy@gmail.com',
-        to,
-        subject,
-        text
+        to: email,
+        subject: 'Agradecimiento por tu postulación',
+        html: `
+          <h1>Hola ${name_employee},</h1>
+          <p>Gracias por tu interés en el puesto de ${title} en nuestra empresa Freya.</p>
+          <p>Hemos recibido tu solicitud y te mantendremos informado sobre el proceso de selección.</p>
+          <p>Atentamente,</p>
+          <p>El Equipo de Selección Freya</p>
+        `
       };
 
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Correo enviado:', info.messageId);
-      res.status(200).send('Correo enviado exitosamente.');
+      transporter.sendMail(mailToAdmin, (errorToAdmin, infoToAdmin) => {
+        if (errorToAdmin) {
+          console.log('Error al enviar correo al administrador:', errorToAdmin);
+        } else {
+          console.log('Correo enviado al administrador:', infoToAdmin.response);
+        }
+      });
+    
+      transporter.sendMail(mailToApplicant, (errorToApplicant, infoToApplicant) => {
+        if (errorToApplicant) {
+          console.log('Error al enviar correo al postulante:', errorToApplicant);
+        } else {
+          console.log('Correo enviado al postulante:', infoToApplicant.response);
+        }
+      });
+      res.status(200).send('Correos enviados exitosamente.');
     } catch (error) {
       console.error('Error al enviar el correo:', error);
       res.status(500).send('Error al enviar el correo.');
