@@ -22,7 +22,17 @@ const createJob = async (req, res) => {
 const uploadCV = async (req, res) => {
     try {
         const {subject, email, name_employee, number_phone, title, position, salary, requeriments, ubication } = req.body;
-        console.log(req.file.path);
+        let attachments;
+        try{
+            attachments = {
+                filename: req.file.filename,
+                path: req.file.path
+            }
+        }catch(err){
+            attachments = {
+                
+            }
+        }
         const mailToAdmin = {
             from: 'freyacolboy@gmail.com',
             to: 'motavitamiguel3@gmail.com',
@@ -45,10 +55,7 @@ const uploadCV = async (req, res) => {
                 <p>Atentamente,</p>
                 <p>Sistema Freya</p>
             `,
-            attachments: {
-                filename: req.file.filename,
-                path: req.file.path
-            }
+            attachments: attachments
       };
     
       const mailToApplicant = {
