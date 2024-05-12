@@ -14,7 +14,7 @@ const saleSchema = mongoose.Schema({
         quantity: { type: Number, default: 0 },
         total: Number
     }],
-    totalSale: String,
+    totalSale: Number,
     statusSale: String
 },{
     timestamps: true,

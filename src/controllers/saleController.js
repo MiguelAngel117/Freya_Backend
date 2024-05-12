@@ -159,4 +159,129 @@ const deleteSaleById = async (req, res) => {
     }
 }
 
-module.exports = { createSale, getSales, getSaleById, updateSaleById, deleteSaleById, getSaleByUserId };
+const salesToDay = async (req, res)=>{
+    try {
+        const today = new Date();
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+        const ventasDia = await Sale.aggregate([
+            {
+                $match: {
+                    $and: [
+                        { createdAt: { $gte: startOfDay, $lt: endOfDay } },
+                        { statusSale: { $ne: 'CANCELADA' } }
+                    ]
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    user_id: 1,
+                    totalSale: 1,
+                    createdAt: 1,
+                    articles:1
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    quantitySales: { $sum: 1 },
+                    totalVentasValor: { $sum: { $toDouble: '$totalSale' } },
+                    sales: { $push: '$$ROOT' }
+                }
+            }
+        ]);
+
+        return res.status(200).json({ ventasDia });
+    } catch (error) {
+        console.error('Error al obtener las ventas del día:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
+
+const salesToWeek = async (req, res)=>{
+    try {
+        const today = new Date();
+        const startOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+        const endOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 7);
+
+        const ventasSemana = await Sale.aggregate([
+            {
+                $match: {
+                    $and: [
+                        { createdAt: { $gte: startOfWeek, $lt: endOfWeek } },
+                        { statusSale: { $ne: 'CANCELADA' } }
+                    ]
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    user_id: 1,
+                    totalSale: 1,
+                    createdAt: 1,
+                    articles: 1,
+                    statusSale: 1
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    quantitySales: { $sum: 1 },
+                    totalValue: { $sum: { $toDouble: '$totalSale' } },
+                    sales: { $push: '$$ROOT' }
+                }
+            }
+        ]);
+
+        return res.status(200).json({ ventasSemana });
+    } catch (error) {
+        console.error('Error al obtener las ventas de la semana:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
+
+const salesToMonth = async (req, res) => {
+    try {
+        const today = new Date();
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+        const ventasMes = await Sale.aggregate([
+            {
+                $match: {
+                    $and: [
+                        { createdAt: { $gte: startOfMonth, $lt: endOfMonth } },
+                        { statusSale: { $ne: 'CANCELADA' } }
+                    ]
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    user_id: 1,
+                    totalSale: 1,
+                    createdAt: 1,
+                    articles:1,
+                    statusSale: 1
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    quantitySales: { $sum: 1 },
+                    totalValue: { $sum: { $toDouble: '$totalSale' } },
+                    sales: { $push: '$$ROOT' }
+                }
+            }
+        ]);
+
+        return res.status(200).json({ ventasMes });
+    } catch (error) {
+        console.error('Error al obtener las ventas del mes:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
+
+module.exports = { createSale, getSales, getSaleById, updateSaleById, deleteSaleById, getSaleByUserId, salesToDay, salesToWeek, salesToMonth};
