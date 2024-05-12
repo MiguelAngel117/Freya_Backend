@@ -1,5 +1,5 @@
 const Job = require('../models/job');
-const transporter = require('../middleware/     nodeMailer');
+const transporter = require('../middleware/nodeMailer');
 
 const createJob = async (req, res) => {
     try {
@@ -17,13 +17,13 @@ const createJob = async (req, res) => {
 
 const uploadCV = async (req, res) => {
     try {
-      const {destinatario, asunto, mensaje } = req.body;
+      const {to, subject, text } = req.body;
 
       const mailOptions = {
         from: 'freyacolboy@gmail.com',
-        to: destinatario,
-        subject: asunto,
-        text: mensaje
+        to,
+        subject,
+        text
       };
 
       const info = await transporter.sendMail(mailOptions);
