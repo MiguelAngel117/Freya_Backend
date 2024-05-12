@@ -138,7 +138,6 @@ const deleteUser = async (req, res) => {
     }
 };
 
-// Sort users by a specific field
 const sortUsers = async (req, res) => {
     try {
         const { sortBy } = req.query;

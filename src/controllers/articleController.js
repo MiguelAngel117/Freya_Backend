@@ -37,7 +37,7 @@ const uploadImage = async (req, res) => {
 
 const uploadImageN = async (req, res)=>{
     try {
-        console.log(req.file); // Log req.file to see if it is defined
+        console.log(req.file);
         const result = await cloudinary.uploader.upload(req.file.path, {
           public_id: `${req.file.filename}`,
           folder: 'articles',

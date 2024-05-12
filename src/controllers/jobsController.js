@@ -1,4 +1,5 @@
 const Job = require('../models/job');
+const transporter = require('../middleware/     nodeMailer');
 
 const createJob = async (req, res) => {
     try {
@@ -13,6 +14,26 @@ const createJob = async (req, res) => {
         res.status(500).send("Error creating job - Internal Server Error");
     }
 }
+
+const uploadCV = async (req, res) => {
+    try {
+      const {destinatario, asunto, mensaje } = req.body;
+
+      const mailOptions = {
+        from: 'freyacolboy@gmail.com',
+        to: destinatario,
+        subject: asunto,
+        text: mensaje
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Correo enviado:', info.messageId);
+      res.status(200).send('Correo enviado exitosamente.');
+    } catch (error) {
+      console.error('Error al enviar el correo:', error);
+      res.status(500).send('Error al enviar el correo.');
+    }
+  }
 
 const getJobs = async (req, res) => {
     try {
@@ -126,5 +147,6 @@ module.exports = {
     updateJobById,
     deleteJobById,
     getJobsSortedByTitle,
-    searchJobsByTitle
+    searchJobsByTitle,
+    uploadCV
 };
