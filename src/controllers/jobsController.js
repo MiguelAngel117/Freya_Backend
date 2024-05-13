@@ -7,10 +7,6 @@ const upload = multer({ storage: storage });
 
 const createJob = async (req, res) => {
     try {
-        /*const existingJob = await Job.findOne({ title: req.body.title });
-        if (existingJob) {
-            return res.status(400).send("A job with the same title already exists");
-        }*/
         const create = await Job.create(req.body);
         res.status(201).send(create);
     } catch (error) {

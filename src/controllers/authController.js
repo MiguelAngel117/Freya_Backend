@@ -18,10 +18,7 @@ const login = async (req, res) =>{
         const checkPassword = await compare(password, user.password);
         const tokenSession = await tokenSign(user)
         if(checkPassword){
-            return res.status(200).send({
-                data: user,
-                tokenSession
-            });
+            return res.status(200).send({token:tokenSession});
         }else{
             return res.status(409).send({
                 error: 'INVALID PASSWORD'
@@ -58,8 +55,8 @@ const register = async (req, res) =>{
             email: email.toUpperCase(),
             password: encryptedPass
         };
-        const savedUser = await userModel.create(user);
-        res.status(201).send(savedUser);
+        await userModel.create(user);
+        res.status(201).send(`!Hola, ${user.first_name}¡, tu resgistro fue exitoso`);
     } catch (error) {
         console.error("Error register user:", error);
         res.status(500).send("Internal server error");
