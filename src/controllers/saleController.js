@@ -4,7 +4,8 @@ const Article = require('../models/article');
 
 const createSale = async (req, res) => {
     try {
-        const { user_id, articles, totalSale, statusSale } = req.body;
+        const { user_id, articles, statusSale } = req.body;
+        let totalSale = 0;
         if (user_id.length !== 24) {
             return res.status(400).send("Invalid user ID length");
         }
@@ -31,9 +32,17 @@ const createSale = async (req, res) => {
 
             const updatedQuantity = article.stock[sizeIndex].quantity - item.quantity;
             if (updatedQuantity < 0) {
-                return res.status(400).send(`Insufficient stock for article ${item.article_id} in size ${item.size}`);
+                return res.status(400).send(`Insufficient stock for article ${article.name_article} in size ${item.size}`);
             }
 
+            if(item.quantity < 6){
+                item.total = item.quantity * article.retail_price;
+            }else if(item.quantity < 20){
+                item.total += (item.quantity * article.medium_price);
+            }else{
+                item.total += (item.quantity * article.wholesale_price);
+            }
+            totalSale += item.total;
             article.stock[sizeIndex].quantity = updatedQuantity;
             await article.save();
         }
