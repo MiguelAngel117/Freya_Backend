@@ -18,7 +18,10 @@ const login = async (req, res) =>{
         const checkPassword = await compare(password, user.password);
         const tokenSession = await tokenSign(user)
         if(checkPassword){
-            return res.status(200).send({token:tokenSession});
+            return res.status(200).send({
+                data: user,
+                tokenSession
+            });
         }else{
             return res.status(409).send({
                 error: 'INVALID PASSWORD'
