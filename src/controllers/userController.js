@@ -124,6 +124,32 @@ const updateAddress = async (req, res) => {
     }
 };
 
+const deleteAddress = async (req, res) => {
+    const { id } = req.params;
+    const { id_address } = req.body;
+    try {
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        const direccionIndex = user.shiping_address.findIndex(dir => dir._id.toString() === id_address);
+
+        if (direccionIndex === -1) {
+            return res.status(404).json({ error: 'Dirección no encontrada' });
+        }
+
+        user.shiping_address.splice(direccionIndex, 1);
+
+        await user.save();
+
+        return res.status(200).json({ message: 'Dirección eliminada correctamente', user });
+    } catch (error) {
+        console.error('Error al eliminar la dirección:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
 const deleteUser = async (req, res) => {
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);
@@ -169,4 +195,4 @@ const searchUsersByName = async (req, res) => {
     }
 }
 
-module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers, searchUsersByName, updateAddress, createAddress };
+module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, sortUsers, searchUsersByName, updateAddress, createAddress, deleteAddress};
