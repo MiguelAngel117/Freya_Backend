@@ -5,6 +5,7 @@ const saleSchema = mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'users'
     },
+    address_id: {type: mongoose.Schema.ObjectId},
     articles: [{
         article_id: {
             type: mongoose.Schema.ObjectId,
@@ -15,7 +16,7 @@ const saleSchema = mongoose.Schema({
         total: Number
     }],
     totalSale: Number,
-    statusSale: String
+    statusSale: String,
 },{
     timestamps: true,
     versionKey: false

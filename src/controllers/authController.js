@@ -1,6 +1,7 @@
 const userModel = require('../models/user');
 const {encrypt, compare} = require('../helpers/handleBcrypt');
 const { tokenSign } = require('../helpers/generateToken');
+const transporter = require('../middleware/nodeMailer');
 
 const login = async (req, res) =>{
     try {
@@ -108,8 +109,59 @@ const changePassword = async (req, res) => {
     }
 }
 
+const changePasswordSesion = async(req, res) =>{
+    const email = req.body.email;
+    const user = await userModel.findOne({email: email.toUpperCase()});
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        res.status(400).send("INVALID EMAIL FORMAT");
+        return;
+    }
+    if(!user){
+        return res.status(404).send("El correo no existe");
+    }else{
+        const emailSend = {
+            from: 'freyacolboy@gmail.com',
+            to: email,
+            subject: 'Restablecimiento contraseña Freya',
+            html: `
+              <h1>!Hola¡</h1>
+              <p>En el siguiente enlace podrás acceder al reestablecimiento de contraseña.</p>
+              <p>https://freya-backend.onrender.com</p>
+              <p>Atentamente,</p>
+              <p>Sistema Freya</p>
+            `
+        };
+        transporter.sendMail(emailSend, (errorToAdmin, infoToAdmin) => {
+            if (errorToAdmin) {
+              console.log('Error al enviar correo', errorToAdmin);
+            } else {
+              console.log('Correo enviado al usuario:', infoToAdmin.response);
+            }
+        });
+        return res.status(200).send("El cambio de contraseña fue enviado a tu correo");
+    }
+}
+
+const changePass = async(req, res)=>{
+    const {email, password} = req.body;
+    const newPassword = await encrypt(password);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const userUp = await userModel.findOne({email: email.toUpperCase()});
+    if (!emailRegex.test(email)) {
+        return res.status(400).send("INVALID EMAIL FORMAT");
+    }
+
+    if(!userUp) {
+        return res.status(404).send("Usuario invalido");
+    }else{
+        userModel.updateOne(email, {password: newPassword}, { new: true });
+        return res.status(200).send("Contraseña Reestablecida");
+    }
+}
+
 const sendStatus = async(req, res)=>{
     res.status(200).send("USUARIO CON SESIÓN ACTIVA");
 }
 
-module.exports = {login, register, changeStatus, changePassword, sendStatus};
+module.exports = {login, register, changeStatus, changePassword, sendStatus, changePasswordSesion, changePass};

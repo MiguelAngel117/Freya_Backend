@@ -4,8 +4,12 @@ const Article = require('../models/article');
 
 const createSale = async (req, res) => {
     try {
-        const { user_id, articles, statusSale } = req.body;
+        const { user_id, articles, statusSale, address_id } = req.body;
         let totalSale = 0;
+        if (articles.length == 0) {
+            return res.status(400).send("No hay articulos en el Carrito");
+        }
+
         if (user_id.length !== 24) {
             return res.status(400).send("Invalid user ID length");
         }
@@ -13,6 +17,11 @@ const createSale = async (req, res) => {
         const user = await User.findById(user_id);
         if (!user) {
             return res.status(404).send("User not found");
+        }
+
+        const address = user.shiping_address.id(address_id);
+        if (!address) {
+            return res.status(404).send("Address not found");
         }
 
         for (const item of articles) {
@@ -46,9 +55,8 @@ const createSale = async (req, res) => {
             article.stock[sizeIndex].quantity = updatedQuantity;
             await article.save();
         }
-
-        const newSale = await Sale.create({ user_id, articles, totalSale, statusSale });
-        res.status(201).send(newSale);
+        const newSale = await Sale.create({ user_id, articles, totalSale, statusSale, address_id });
+        res.status(201).send({newSale, address});
     } catch (error) {
         console.error("Error creating sale:", error);
         res.status(500).send("Error creating sale - Internal Server Error");
