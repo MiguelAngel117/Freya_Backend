@@ -1,6 +1,8 @@
 const {createSale, getSales, getSaleById, updateSaleById, deleteSaleById, getSaleByUserId, salesToDay, salesToWeek, salesToMonth} = require('../../controllers/saleController');
 const express = require('express');
 const router = express.Router();
+const checkAuth = require('../../middleware/authMiddle');
+const checkRoleAuth = require('../../middleware/roleAuth');
 
 router.get(`/`, checkAuth, checkRoleAuth(['admin']),getSales);
 router.get(`/salesToDay/`, checkAuth, checkRoleAuth(['admin']), salesToDay);
