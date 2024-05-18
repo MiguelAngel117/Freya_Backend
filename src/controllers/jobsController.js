@@ -2,8 +2,6 @@ const Job = require('../models/job');
 const multer = require('multer');
 const transporter = require('../middleware/nodeMailer');
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 const createJob = async (req, res) => {
     try {

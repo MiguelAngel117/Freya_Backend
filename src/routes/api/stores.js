@@ -12,9 +12,9 @@ const {
 const checkAuth = require('../../middleware/authMiddle');
 const checkRoleAuth = require('../../middleware/roleAuth');
 
-router.get('/sorted', checkAuth, checkRoleAuth(['admin']), getStoresSortedByName);
-router.get('/search',checkAuth, checkRoleAuth(['admin']), searchStoresByName);
-router.get('/', checkAuth, checkRoleAuth(['admin']), getStores);
+router.get('/sorted', getStoresSortedByName);
+router.get('/search', searchStoresByName);
+router.get('/', getStores);
 router.get('/:id', checkAuth, checkRoleAuth(['admin']), getStoreById);
 
 router.post('/', checkAuth, checkRoleAuth(['admin']), createStore);
