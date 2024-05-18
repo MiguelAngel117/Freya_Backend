@@ -70,7 +70,14 @@ const getSales = async (req, res) => {
             res.status(200).send("NO SALES REGISTERED");
             return;
         }
-        res.status(200).send(listSales);
+
+        const salesWithAddresses = await Promise.all(listSales.map(async (sale) => {
+            const user = await User.findById(sale.user_id);
+            const address = user ? user.shiping_address.id(sale.address_id) : null;
+            return { ...sale.toObject(), address };
+        }));
+
+        res.status(200).send(salesWithAddresses);
     } catch (error) {
         console.error("Error getting sales:", error);
         res.status(500).send("Error getting sales - Internal Server Error");
@@ -89,7 +96,12 @@ const getSaleById = async (req, res) => {
             res.status(404).send("Sale not found");
             return;
         }
-        res.status(200).send(sale);
+
+        const user = await User.findById(sale.user_id);
+        const address = user ? user.shiping_address.id(sale.address_id) : null;
+        const saleWithAddress = { ...sale.toObject(), address };
+
+        res.status(200).send(saleWithAddress);
     } catch (error) {
         console.error("Error getting sale by ID:", error);
         res.status(500).send("Error getting sale by ID - Internal Server Error");
@@ -103,19 +115,25 @@ const getSaleByUserId = async (req, res) => {
         if (user_id.length !== 24) {
             return res.status(400).send("Invalid user ID length");
         }
-    
+
         const sales = await Sale.find({ user_id });
 
         if (!sales || sales.length === 0) {
             return res.status(404).send("No sales found for this user ID");
         }
 
-        res.status(200).send(sales);
+        const salesWithAddresses = await Promise.all(sales.map(async (sale) => {
+            const user = await User.findById(user_id);
+            const address = user ? user.shiping_address.id(sale.address_id) : null;
+            return { ...sale.toObject(), address };
+        }));
+
+        res.status(200).send(salesWithAddresses);
     } catch (error) {
         console.error("Error finding sales by user ID:", error);
         res.status(500).send("Error finding sales by user ID - Internal Server Error");
     }
-};
+}
 
 
 const updateSaleById = async (req, res) => {
