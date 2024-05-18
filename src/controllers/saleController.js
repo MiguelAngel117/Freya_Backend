@@ -4,7 +4,7 @@ const Article = require('../models/article');
 
 const createSale = async (req, res) => {
     try {
-        const { user_id, articles, statusSale, address_id } = req.body;
+        const { user_id, articles, address_id } = req.body;
         let totalSale = 0;
         if (articles.length == 0) {
             return res.status(400).send("No hay articulos en el Carrito");
@@ -55,6 +55,7 @@ const createSale = async (req, res) => {
             article.stock[sizeIndex].quantity = updatedQuantity;
             await article.save();
         }
+        const statusSale = 'CONFIRMADA';
         const newSale = await Sale.create({ user_id, articles, totalSale, statusSale, address_id });
         res.status(201).send({newSale, address});
     } catch (error) {
@@ -138,7 +139,8 @@ const getSaleByUserId = async (req, res) => {
 
 const updateSaleById = async (req, res) => {
     const { id } = req.params;
-    const { statusSale } = req.body;
+    const statusSale = req.body.statusSale;
+    statusSale = statusSale.toUpperCase();
 
     try {
         if (id.length !== 24) {
@@ -161,9 +163,8 @@ const updateSaleById = async (req, res) => {
                 );
             }
             sale.statusSale = statusSale;
-        }else if(statusSale === 'COMPLETA'){
+        }else if(statusSale === 'COMPLETADA'){
             sale.statusSale = statusSale;
-            return res.status(200).json({ message: 'Venta Completa' });
         }else{
             return res.status(400).json({ error: 'La Venta ya está Cancelada' });
         }
