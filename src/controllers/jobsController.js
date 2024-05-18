@@ -7,7 +7,11 @@ const upload = multer({ storage: storage });
 
 const createJob = async (req, res) => {
     try {
-        const create = await Job.create(req.body);
+        const {title,position, salary, requeriments, ubication, min_knowledge,responsibilities } = req.body;
+        const job = new Job({
+            title, position, salary, requeriments, ubication, min_knowledge,responsibilities
+        })
+        const create = await job.save();
         res.status(201).send(create);
     } catch (error) {
         console.error("Error creating job:", error);
