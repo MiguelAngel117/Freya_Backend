@@ -139,15 +139,13 @@ const getSaleByUserId = async (req, res) => {
 
 const updateSaleById = async (req, res) => {
     const { id } = req.params;
-    const statusSale = req.body.statusSale;
-    statusSale = statusSale.toUpperCase();
+    const statusSale = req.body.statusSale.toUpperCase();
 
     try {
         if (id.length !== 24) {
             return res.status(400).send("Invalid user ID length");
         }
 
-        
         const sale = await Sale.findById(id);
 
         if (!sale) {
