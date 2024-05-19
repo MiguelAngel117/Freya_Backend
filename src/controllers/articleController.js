@@ -192,6 +192,7 @@ const searchArticlesByName = async (req, res) => {
         if (!searchTerm) {
             return res.status(400).send("Se requiere un término de búsqueda");
         }
+
         const matchedArticles = await Article.find({ name_article: { $regex: searchTerm, $options: 'i' } });
 
         if (matchedArticles.length === 0) {
@@ -233,31 +234,26 @@ const searchArticlesByNameAndCategory = async (req, res) => {
     }
 }
 
-const searchArticlesByCategory = async (req, res) => {
+const getArticleByGender = async (req, res)=>{
     try {
-        const categoryName = req.query.category;
-        if (!categoryName) {
-            return res.status(400).send("Se requiere el nombre de la categoría para la búsqueda");
+        const searchTerm = req.query.gender;
+        
+        if (!searchTerm) {
+            return res.status(400).send("Se requiere un término de búsqueda");
         }
-        const matchedCategories = await Category.find({ name_category: new RegExp(categoryName, 'i') });
+        const term = (searchTerm == "F") ? "FEMALE" : "MALE";
+        const filterArticles = await Article.find({gender: term});
 
-        if (matchedCategories.length === 0) {
-            return res.status(404).send("No se encontraron categorías que coincidan con el nombre proporcionado");
+        if (filterArticles.length === 0) {
+            return res.status(404).send("No se encontraron artículos que coincidan con la búsqueda");
         }
 
-        const categoryIds = matchedCategories.map(category => category._id);
-        const matchedArticles = await Article.find({ category: { $in: categoryIds } });
-
-        if (matchedArticles.length === 0) {
-            return res.status(404).send("No se encontraron artículos en las categorías coincidentes");
-        }
-        res.status(200).send(matchedArticles);
+        res.status(200).send(filterArticles);
     } catch (error) {
-        console.error("Error al buscar artículos por categoría:", error);
-        res.status(500).send("Error al buscar artículos por categoría - Error interno del servidor");
+        console.error("Error al buscar artículos por nombre:", error);
+        res.status(500).send("Error al buscar artículos por nombre - Error interno del servidor");
     }
 }
-
 
 const searchArticlesByPriceRange = async (req, res) => {
     try {
@@ -283,24 +279,50 @@ const searchArticlesByPriceRange = async (req, res) => {
     }
 }
 
-const getArticleByGender = async (req, res)=>{
+const searchArticlesByCategory = async (req, res) => {
     try {
-        const searchTerm = req.query.gender;
-        
-        if (!searchTerm) {
-            return res.status(400).send("Se requiere un término de búsqueda");
-        }
-        const term = (searchTerm == "F") ? "FEMALE" : "MALE";
-        const filterArticles = await Article.find({gender: term});
+        const { id } = req.params;
 
-        if (filterArticles.length === 0) {
-            return res.status(404).send("No se encontraron artículos que coincidan con la búsqueda");
+        if (!id) {
+            return res.status(400).send("Se requiere el ID de la categoría para la búsqueda");
         }
 
-        res.status(200).send(filterArticles);
+        const matchedArticles = await Article.find({ category: id });
+
+        if (matchedArticles.length === 0) {
+            return res.status(404).send("No se encontraron artículos en esta categoría");
+        }
+
+        res.status(200).send(matchedArticles);
     } catch (error) {
-        console.error("Error al buscar artículos por nombre:", error);
-        res.status(500).send("Error al buscar artículos por nombre - Error interno del servidor");
+        console.error("Error al buscar artículos por categoría:", error);
+        res.status(500).send("Error al buscar artículos por categoría - Error interno del servidor");
+    }
+}
+
+const searchArticlesByCategoryName = async (req, res) => {
+    try {
+        const categoryName = req.query.category;
+
+        if (!categoryName) {
+            return res.status(400).send("Se requiere el nombre de la categoría para la búsqueda");
+        }
+        const matchedCategories = await Category.find({ name_category: new RegExp(categoryName, 'i') });
+        if (matchedCategories.length === 0) {
+            return res.status(404).send("No se encontraron categorías que coincidan con el nombre proporcionado");
+        }
+
+        const categoryIds = matchedCategories.map(category => category._id);
+        const matchedArticles = await Article.find({ category: { $in: categoryIds } });
+
+        if (matchedArticles.length === 0) {
+            return res.status(404).send("No se encontraron artículos en las categorías coincidentes");
+        }
+
+        res.status(200).send(matchedArticles);
+    } catch (error) {
+        console.error("Error al buscar artículos por categoría:", error);
+        res.status(500).send("Error al buscar artículos por categoría - Error interno del servidor");
     }
 }
 
@@ -324,4 +346,4 @@ const getArticleByGenderAndCategory = async (req, res)=>{
     }
 }
 
-module.exports = {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName, searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage, getArticleByGender, getArticleByGenderAndCategory, uploadImageN};
+module.exports = {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName, searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage, getArticleByGender, getArticleByGenderAndCategory, uploadImageN, searchArticlesByCategoryName};

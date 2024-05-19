@@ -1,4 +1,4 @@
-    const {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName,searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage, getArticleByGender, getArticleByGenderAndCategory, uploadImageN} = require('../../controllers/articleController');
+    const {getArticles, getArticle, createArticle, deleteArticleById, setArticle, searchArticlesByName,searchArticlesByNameAndCategory, searchArticlesByCategory, searchArticlesByPriceRange, uploadImage, getArticleByGender, getArticleByGenderAndCategory, uploadImageN, searchArticlesByCategoryName} = require('../../controllers/articleController');
     const checkAuth = require('../../middleware/authMiddle');
     const checkRoleAuth = require('../../middleware/roleAuth');
     const express = require('express');
@@ -6,10 +6,11 @@
     const multer = require('../../middleware/multer');
 
     router.get('/search', searchArticlesByName);
+    router.get('/searchArticleByCategoryName', searchArticlesByCategoryName);
     router.get('/searchArticleByGender', getArticleByGender);
     router.get('/searchArticleGenAndCat', getArticleByGenderAndCategory);
     router.get('/searchAC', searchArticlesByNameAndCategory);
-    router.get('/searchArticleByCategory', searchArticlesByCategory);
+    router.get('/searchArticleByCategory/:id', searchArticlesByCategory);
     router.get('/searchPriceRange', searchArticlesByPriceRange);
     router.get('/',getArticles);
     router.get('/:id', getArticle);
