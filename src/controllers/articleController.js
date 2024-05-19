@@ -192,8 +192,6 @@ const searchArticlesByName = async (req, res) => {
         if (!searchTerm) {
             return res.status(400).send("Se requiere un término de búsqueda");
         }
-
-        // Buscar artículos por nombre
         const matchedArticles = await Article.find({ name_article: { $regex: searchTerm, $options: 'i' } });
 
         if (matchedArticles.length === 0) {
@@ -237,24 +235,29 @@ const searchArticlesByNameAndCategory = async (req, res) => {
 
 const searchArticlesByCategory = async (req, res) => {
     try {
-        const categoryId = req.query.category;
+        const categoryName = req.query.category;
+        if (!categoryName) {
+            return res.status(400).send("Se requiere el nombre de la categoría para la búsqueda");
+        }
+        const matchedCategories = await Category.find({ name_category: new RegExp(categoryName, 'i') });
 
-        if (!categoryId) {
-            return res.status(400).send("Se requiere el ID de la categoría para la búsqueda");
+        if (matchedCategories.length === 0) {
+            return res.status(404).send("No se encontraron categorías que coincidan con el nombre proporcionado");
         }
 
-        const matchedArticles = await Article.find({ category: categoryId });
+        const categoryIds = matchedCategories.map(category => category._id);
+        const matchedArticles = await Article.find({ category: { $in: categoryIds } });
 
         if (matchedArticles.length === 0) {
-            return res.status(404).send("No se encontraron artículos en esta categoría");
+            return res.status(404).send("No se encontraron artículos en las categorías coincidentes");
         }
-
         res.status(200).send(matchedArticles);
     } catch (error) {
         console.error("Error al buscar artículos por categoría:", error);
         res.status(500).send("Error al buscar artículos por categoría - Error interno del servidor");
     }
 }
+
 
 const searchArticlesByPriceRange = async (req, res) => {
     try {

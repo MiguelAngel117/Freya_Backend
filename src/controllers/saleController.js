@@ -161,7 +161,7 @@ const updateSaleById = async (req, res) => {
                 );
             }
             sale.statusSale = statusSale;
-        }else if(statusSale === 'COMPLETADA'){
+        }else if(statusSale === 'COMPLETADA' || statusSale === 'CONFIRMADA'){
             sale.statusSale = statusSale;
         }else{
             return res.status(400).json({ error: 'La Venta ya está Cancelada' });
