@@ -193,6 +193,35 @@ const deleteSaleById = async (req, res) => {
     }
 }
 
+const query = {
+    $project: {
+        _id: 1,
+        user_id: 1,
+        totalSale: 1,
+        createdAt: 1,
+        articles: {
+            $map: {
+                input: '$articles',
+                as: 'article',
+                in: {
+                    $mergeObjects: [
+                        '$$article',
+                        {
+                            name_article: {
+                                $arrayElemAt: [
+                                    '$articlesInfo.name_article',
+                                    { $indexOfArray: ['$articlesInfo._id', '$$article.article_id'] }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
+
+
 const salesToDay = async (req, res) => {
     try {
         const today = new Date();
@@ -216,33 +245,7 @@ const salesToDay = async (req, res) => {
                     as: 'articlesInfo'
                 }
             },
-            {
-                $project: {
-                    _id: 1,
-                    user_id: 1,
-                    totalSale: 1,
-                    createdAt: 1,
-                    articles: {
-                        $map: {
-                            input: '$articles',
-                            as: 'article',
-                            in: {
-                                $mergeObjects: [
-                                    '$$article',
-                                    {
-                                        name: {
-                                            $arrayElemAt: [
-                                                '$articlesInfo.name_article',
-                                                { $indexOfArray: ['$articlesInfo._id', '$$article.article_id'] }
-                                            ]
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            },
+            query,
             {
                 $group: {
                     _id: null,
@@ -283,33 +286,7 @@ const salesToWeek = async (req, res) => {
                     as: 'articlesInfo'
                 }
             },
-            {
-                $project: {
-                    _id: 1,
-                    user_id: 1,
-                    totalSale: 1,
-                    createdAt: 1,
-                    articles: {
-                        $map: {
-                            input: '$articles',
-                            as: 'article',
-                            in: {
-                                $mergeObjects: [
-                                    '$$article',
-                                    {
-                                        name: {
-                                            $arrayElemAt: [
-                                                '$articlesInfo.name_article',
-                                                { $indexOfArray: ['$articlesInfo._id', '$$article.article_id'] }
-                                            ]
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            },
+            query,
             {
                 $group: {
                     _id: null,
@@ -350,33 +327,7 @@ const salesToMonth = async (req, res) => {
                     as: 'articlesInfo'
                 }
             },
-            {
-                $project: {
-                    _id: 1,
-                    user_id: 1,
-                    totalSale: 1,
-                    createdAt: 1,
-                    articles: {
-                        $map: {
-                            input: '$articles',
-                            as: 'article',
-                            in: {
-                                $mergeObjects: [
-                                    '$$article',
-                                    {
-                                        name: {
-                                            $arrayElemAt: [
-                                                '$articlesInfo.name_article',
-                                                { $indexOfArray: ['$articlesInfo._id', '$$article.article_id'] }
-                                            ]
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            },
+            query,
             {
                 $group: {
                     _id: null,
