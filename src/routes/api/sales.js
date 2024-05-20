@@ -1,4 +1,4 @@
-const {createSale, getSales, getSaleById, updateSaleById, deleteSaleById, getSaleByUserId, salesToDay, salesToWeek, salesToMonth} = require('../../controllers/saleController');
+const {createSale, getSales, getSaleById, updateSaleById, deleteSaleById, getSaleByUserId, salesToDay, salesToWeek, salesToMonth, createSaleWithinRegister} = require('../../controllers/saleController');
 const express = require('express');
 const router = express.Router();
 const checkAuth = require('../../middleware/authMiddle');
@@ -12,6 +12,7 @@ router.get(`/:id`, checkAuth, checkRoleAuth(['admin', 'user']), getSaleById);
 router.get(`/getSalesUser/:user_id`, checkAuth, checkRoleAuth(['admin', 'user']), getSaleByUserId);
 
 router.post(`/`, createSale);
+router.post(`/saleWithinReg/`, createSaleWithinRegister);
 
 router.put(`/:id`, checkAuth, checkRoleAuth(['admin', 'user']), updateSaleById);
 

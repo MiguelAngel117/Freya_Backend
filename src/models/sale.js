@@ -5,7 +5,9 @@ const saleSchema = mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'users'
     },
+    user: {},
     address_id: {type: mongoose.Schema.ObjectId},
+    address: {},
     articles: [{
         article_id: {
             type: mongoose.Schema.ObjectId,

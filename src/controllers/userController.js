@@ -10,6 +10,7 @@ const createUser = async (req, res) => {
             gender: req.body.gender,
             number_phone: req.body.number_phone, 
             shiping_address: req.body.shiping_address,
+            email: req.body.email,
             role: ''
         });
         const savedUser = await User.create(user);

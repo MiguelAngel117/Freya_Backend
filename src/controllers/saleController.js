@@ -64,6 +64,54 @@ const createSale = async (req, res) => {
     }
 }
 
+const createSaleWithinRegister = async (req, res) => {
+    try {
+        const { user, articles, address } = req.body;
+        let totalSale = 0;
+        if (articles.length == 0) {
+            return res.status(400).send("No hay articulos en el Carrito");
+        }
+
+        for (const item of articles) {
+            if (item.article_id.length !== 24) {
+                return res.status(400).send("Invalid article ID length");
+            }
+
+            const article = await Article.findById(item.article_id);
+            if (!article) {
+                return res.status(404).send("Article not found");
+            }
+
+            const sizeIndex = article.stock.findIndex(stockItem => stockItem.size === item.size);
+            if (sizeIndex === -1) {
+                return res.status(400).send(`Size ${item.size} not found for article ${item.article_id}`);
+            }
+
+            const updatedQuantity = article.stock[sizeIndex].quantity - item.quantity;
+            if (updatedQuantity < 0) {
+                return res.status(400).send(`Insufficient stock for article ${article.name_article} in size ${item.size}`);
+            }
+
+            if(item.quantity < 6){
+                item.total = item.quantity * article.retail_price;
+            }else if(item.quantity < 20){
+                item.total += (item.quantity * article.medium_price);
+            }else{
+                item.total += (item.quantity * article.wholesale_price);
+            }
+            totalSale += item.total;
+            article.stock[sizeIndex].quantity = updatedQuantity;
+            await article.save();
+        }
+        const statusSale = 'CONFIRMADA';
+        const newSale = await Sale.create({ user, articles, totalSale, statusSale, address });
+        res.status(201).send({newSale, address});
+    } catch (error) {
+        console.error("Error creating sale:", error);
+        res.status(500).send("Error creating sale - Internal Server Error");
+    }
+}
+
 const getSales = async (req, res) => {
     try {
         const listSales = await Sale.find();
@@ -345,4 +393,4 @@ const salesToMonth = async (req, res) => {
     }
 }
 
-module.exports = { createSale, getSales, getSaleById, updateSaleById, deleteSaleById, getSaleByUserId, salesToDay, salesToWeek, salesToMonth};
+module.exports = { createSale, getSales, getSaleById, updateSaleById, deleteSaleById, getSaleByUserId, salesToDay, salesToWeek, salesToMonth, createSaleWithinRegister};
