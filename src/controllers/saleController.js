@@ -4,26 +4,11 @@ const Article = require('../models/article');
 
 const createSale = async (req, res) => {
     try {
-        const { user_id, articles, address_id } = req.body;
+        const { user_id, user, articles, address_id, address } = req.body;
         let totalSale = 0;
         if (articles.length == 0) {
             return res.status(400).send("No hay articulos en el Carrito");
         }
-
-        if (user_id.length !== 24) {
-            return res.status(400).send("Invalid user ID length");
-        }
-
-        const user = await User.findById(user_id);
-        if (!user) {
-            return res.status(404).send("User not found");
-        }
-
-        const address = user.shiping_address.id(address_id);
-        if (!address) {
-            return res.status(404).send("Address not found");
-        }
-
         for (const item of articles) {
             if (item.article_id.length !== 24) {
                 return res.status(400).send("Invalid article ID length");
@@ -56,8 +41,28 @@ const createSale = async (req, res) => {
             await article.save();
         }
         const statusSale = 'CONFIRMADA';
-        const newSale = await Sale.create({ user_id, articles, totalSale, statusSale, address_id });
-        res.status(201).send({newSale, address});
+        console.log(user);
+        if(user === undefined){
+            if (user_id.length !== 24) {
+                return res.status(400).send("Invalid user ID length");
+            }
+    
+            const user = await User.findById(user_id);
+            if (!user) {
+                return res.status(404).send("User not found");
+            }
+    
+            const address = user.shiping_address.id(address_id);
+            if (!address) {
+                return res.status(404).send("Address not found");
+            }
+            const newSale = await Sale.create({ user_id, articles, totalSale, statusSale, address_id });
+            res.status(201).send({newSale, address});
+
+        }else{
+            const newSale = await Sale.create({ user, articles, totalSale, statusSale, address });
+            res.status(201).send({newSale});
+        }        
     } catch (error) {
         console.error("Error creating sale:", error);
         res.status(500).send("Error creating sale - Internal Server Error");
@@ -66,7 +71,7 @@ const createSale = async (req, res) => {
 
 const createSaleWithinRegister = async (req, res) => {
     try {
-        const { user, articles, address } = req.body;
+        const { userN, articles, address } = req.body;
         let totalSale = 0;
         if (articles.length == 0) {
             return res.status(400).send("No hay articulos en el Carrito");
@@ -104,7 +109,7 @@ const createSaleWithinRegister = async (req, res) => {
             await article.save();
         }
         const statusSale = 'CONFIRMADA';
-        const newSale = await Sale.create({ user, articles, totalSale, statusSale, address });
+        const newSale = await Sale.create({ userN, articles, totalSale, statusSale, address });
         res.status(201).send({newSale, address});
     } catch (error) {
         console.error("Error creating sale:", error);
