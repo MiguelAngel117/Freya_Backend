@@ -193,7 +193,7 @@ const deleteSaleById = async (req, res) => {
     }
 }
 
-const salesToDay = async (req, res)=>{
+const salesToDay = async (req, res) => {
     try {
         const today = new Date();
         const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -209,12 +209,38 @@ const salesToDay = async (req, res)=>{
                 }
             },
             {
+                $lookup: {
+                    from: 'articles',
+                    localField: 'articles.article_id',
+                    foreignField: '_id',
+                    as: 'articlesInfo'
+                }
+            },
+            {
                 $project: {
                     _id: 1,
                     user_id: 1,
                     totalSale: 1,
                     createdAt: 1,
-                    articles:1
+                    articles: {
+                        $map: {
+                            input: '$articles',
+                            as: 'article',
+                            in: {
+                                $mergeObjects: [
+                                    '$$article',
+                                    {
+                                        name: {
+                                            $arrayElemAt: [
+                                                '$articlesInfo.name_article',
+                                                { $indexOfArray: ['$articlesInfo._id', '$$article.article_id'] }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
                 }
             },
             {
@@ -234,7 +260,7 @@ const salesToDay = async (req, res)=>{
     }
 }
 
-const salesToWeek = async (req, res)=>{
+const salesToWeek = async (req, res) => {
     try {
         const today = new Date();
         const startOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
@@ -250,13 +276,38 @@ const salesToWeek = async (req, res)=>{
                 }
             },
             {
+                $lookup: {
+                    from: 'articles',
+                    localField: 'articles.article_id',
+                    foreignField: '_id',
+                    as: 'articlesInfo'
+                }
+            },
+            {
                 $project: {
                     _id: 1,
                     user_id: 1,
                     totalSale: 1,
                     createdAt: 1,
-                    articles: 1,
-                    statusSale: 1
+                    articles: {
+                        $map: {
+                            input: '$articles',
+                            as: 'article',
+                            in: {
+                                $mergeObjects: [
+                                    '$$article',
+                                    {
+                                        name: {
+                                            $arrayElemAt: [
+                                                '$articlesInfo.name_article',
+                                                { $indexOfArray: ['$articlesInfo._id', '$$article.article_id'] }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
                 }
             },
             {
@@ -292,13 +343,38 @@ const salesToMonth = async (req, res) => {
                 }
             },
             {
+                $lookup: {
+                    from: 'articles',
+                    localField: 'articles.article_id',
+                    foreignField: '_id',
+                    as: 'articlesInfo'
+                }
+            },
+            {
                 $project: {
                     _id: 1,
                     user_id: 1,
                     totalSale: 1,
                     createdAt: 1,
-                    articles:1,
-                    statusSale: 1
+                    articles: {
+                        $map: {
+                            input: '$articles',
+                            as: 'article',
+                            in: {
+                                $mergeObjects: [
+                                    '$$article',
+                                    {
+                                        name: {
+                                            $arrayElemAt: [
+                                                '$articlesInfo.name_article',
+                                                { $indexOfArray: ['$articlesInfo._id', '$$article.article_id'] }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
                 }
             },
             {
