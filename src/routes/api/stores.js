@@ -15,7 +15,7 @@ const checkRoleAuth = require('../../middleware/roleAuth');
 router.get('/sorted', getStoresSortedByName);
 router.get('/search', searchStoresByName);
 router.get('/', getStores);
-router.get('/:id', checkAuth, checkRoleAuth(['admin']), getStoreById);
+router.get('/:id', checkAuth, getStoreById);
 
 router.post('/', checkAuth, checkRoleAuth(['admin']), createStore);
 router.put('/:id', checkAuth, checkRoleAuth(['admin']), updateStoreById);
