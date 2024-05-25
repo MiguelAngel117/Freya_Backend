@@ -54,13 +54,18 @@ const uploadImageN = async (req, res)=>{
 
 const createArticle = async (req, res) => {
     try {
-        const { code_article, name_article, retail_price, medium_price, wholesale_price, description_article, images, stock, category, available, gender, color } = req.body;
+        const {name_article, retail_price, medium_price, wholesale_price, description_article, images, stock, category, available, gender, color } = req.body;
 
         if(category.length === 24){
             const existingCategory = await Category.findById(category);
             if (!existingCategory) {
                 return res.status(404).send("Category not found");
             }
+
+            const categoryPrefix = existingCategory.name_category.substring(0, 3).toUpperCase();
+            const productPrefix = name_article.substring(0, 3).toUpperCase();
+            const countArticles = await Article.countDocuments({ category });
+            const nextCode = `${categoryPrefix}${productPrefix}${countArticles + 1}`;
 
             let formattedStock;
             if(stock != undefined){
@@ -70,7 +75,7 @@ const createArticle = async (req, res) => {
             }
             
             const article = new Article({
-                code_article,
+                code_article: nextCode,
                 name_article,
                 retail_price,
                 medium_price,
