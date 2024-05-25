@@ -1,6 +1,7 @@
 const Article  = require('../models/article');
 const Category = require('../models/category');
 const cloudinary = require('../helpers/cloudDinary');
+const Sale = require('../models/sale');
 
 const getArticles = async (req, res) => {
     try {
@@ -93,25 +94,33 @@ const createArticle = async (req, res) => {
     }
 }
 
+
 const deleteArticleById = async (req, res) => {
     try {
         const id = req.params.id;
-        if(id.length === 24){
-            const deletedArticle = await Article.findByIdAndDelete(id);
-            if (!deletedArticle) {
-                res.status(404).send("Article not found to delete");
-                return;
-            }
-            res.status(200).send("Article deleted successfully");
-        }else{
+        if (id.length !== 24) {
             res.status(400).send("INCOMPLETE ID");
+            return;
+        }
+
+        const isArticleInSale = await Sale.exists({ 'articles.article_id': id });
+        if (isArticleInSale) {
+            res.status(400).send("Article is associated with a sale and cannot be deleted");
+            return;
+        }
+
+        const deletedArticle = await Article.findByIdAndDelete(id);
+        if (!deletedArticle) {
+            res.status(404).send("Article not found to delete");
+            return;
         }
         
+        res.status(200).send("Article deleted successfully");
     } catch (error) {
         console.error("Error deleting Article by ID:", error);
         res.status(500).send("Error deleting Article by ID - Internal Server Error");
     }
-}
+}  
 
 const getArticle = async (req, res) => {
     try {

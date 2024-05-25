@@ -1,4 +1,5 @@
 const categoryModel = require('../models/category');
+const Article  = require('../models/article');
 
 const getCategories = async (req, res) => {
     try {
@@ -51,15 +52,21 @@ const updateCategory = async(req, res) =>{
     }
 }
 
-const deleteCategory = async(req, res) => {
+const deleteCategory = async (req, res) => {
     try {
         const { id } = req.params;
+
+        const isCategoryInUse = await Article.exists({ category: id });
+        if (isCategoryInUse) {
+            return res.status(400).send("Category is associated with a product and cannot be deleted");
+        }
+
         const result = await categoryModel.findByIdAndDelete(id);
-        if(!result) {
+        if (!result) {
             return res.status(404).send("Category Not Found");
         }
-        res.status(200).json({ message: 'Category deleted successfully' });
 
+        res.status(200).json({ message: 'Category deleted successfully' });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
