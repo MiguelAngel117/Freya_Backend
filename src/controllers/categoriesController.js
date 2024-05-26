@@ -12,12 +12,19 @@ const getCategories = async (req, res) => {
 
 const createCategory = async (req, res) => {
     try {
-        const savedCategory = await categoryModel.create(req.body)
+        const { name_category } = req.body;
+
+        const existingCategory = await categoryModel.findOne({ name_category });
+        if (existingCategory) {
+            return res.status(400).json({ error: 'Category name already exists' });
+        }
+
+        const savedCategory = await categoryModel.create(req.body);
         res.status(201).json(savedCategory);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
-}
+};
 
 const getCategory = async (req, res) => {
     try {

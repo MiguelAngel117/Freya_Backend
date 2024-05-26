@@ -144,8 +144,8 @@ const changePasswordSesion = async(req, res) =>{
             subject: 'Restablecimiento contraseña Freya',
             html: `
               <h1>!Hola¡</h1>
-              <p>Podrás acceder a tu cuenta con esta nueva contraseña ${password} 
-              Lo ideal es que la cambies en tu perfil</p>
+              <p>Podrás acceder a tu cuenta con esta nueva contraseña: <b>${password}</b></p>
+              <p>Lo ideal es que la cambies en tu perfil.</p>
               <p>Atentamente,</p>
               <p>Sistema Freya</p>
             `
