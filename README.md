@@ -1,6 +1,11 @@
 # Freya BACKEND
 ¡Bienvenido al backend de Freya Ecommerce! Este repositorio contiene el código desarrollado en Node.js (versión 16) para la parte backend de nuestra aplicación.
 
+Antes de comenzar, asegúrate de tener instalado Node.js (v16) y MongoDB en tu sistema.
+
+- [Node.js](https://nodejs.org/es/download/)
+- [MongoDB](https://www.mongodb.com/try/download/community)
+
 ## **Instalación**
 Para comenzar, asegúrate de tener instaladas todas las dependencias necesarias. Puedes hacerlo ejecutando el siguiente comando en tu terminal: *npm install*
 
