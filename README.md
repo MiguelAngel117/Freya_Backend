@@ -1,5 +1,5 @@
 # Freya BACKEND
-El codigo corresponde a el Backend del Ecommerce Freya, este está desarrollado en Node.Js version 16. 
+El codigo corresponde al Backend del Ecommerce Freya, este está desarrollado en Node.Js version 16. 
 
 Para inicilizar el entonrno de desarrollo se ejecuta el siguiente Comando
 
