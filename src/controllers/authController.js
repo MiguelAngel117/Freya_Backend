@@ -1,4 +1,5 @@
 const userModel = require('../models/user');
+const crypto = require('crypto');
 const {encrypt, compare} = require('../helpers/handleBcrypt');
 const { tokenSign } = require('../helpers/generateToken');
 const transporter = require('../middleware/nodeMailer');
@@ -109,10 +110,25 @@ const changePassword = async (req, res) => {
     }
 }
 
+const generatePassword = () => {
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let password = '';
+    for (let i = 0; i < 8; i++) {
+        const randomIndex = crypto.randomInt(0, charset.length);
+        password += charset[randomIndex];
+    }
+    return password;
+}
+
+
 const changePasswordSesion = async(req, res) =>{
-    const email = req.body.email;
-    const user = await userModel.findOne({email: email.toUpperCase()});
+    const email = req.body.email.toUpperCase();
+    const user =  await userModel.findOne({email: email.toUpperCase()});
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const password = generatePassword();
+    console.log(password);
+    const encryptedPassword =  await encrypt(password);
+    console.log(encryptedPassword);
     if (!emailRegex.test(email)) {
         res.status(400).send("INVALID EMAIL FORMAT");
         return;
@@ -120,14 +136,16 @@ const changePasswordSesion = async(req, res) =>{
     if(!user){
         return res.status(404).send("El correo no existe");
     }else{
+        user.password = encryptedPassword;
+        await user.save();
         const emailSend = {
             from: 'freyacolboy@gmail.com',
             to: email,
             subject: 'Restablecimiento contraseña Freya',
             html: `
               <h1>!Hola¡</h1>
-              <p>En el siguiente enlace podrás acceder al reestablecimiento de contraseña.</p>
-              <p>https://freya-backend.onrender.com</p>
+              <p>Podrás acceder a tu cuenta con esta nueva contraseña ${password} 
+              Lo ideal es que la cambies en tu perfil</p>
               <p>Atentamente,</p>
               <p>Sistema Freya</p>
             `
@@ -143,25 +161,8 @@ const changePasswordSesion = async(req, res) =>{
     }
 }
 
-const changePass = async(req, res)=>{
-    const {email, password} = req.body;
-    const newPassword = await encrypt(password);
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const userUp = await userModel.findOne({email: email.toUpperCase()});
-    if (!emailRegex.test(email)) {
-        return res.status(400).send("INVALID EMAIL FORMAT");
-    }
-
-    if(!userUp) {
-        return res.status(404).send("Usuario invalido");
-    }else{
-        userModel.updateOne(email, {password: newPassword}, { new: true });
-        return res.status(200).send("Contraseña Reestablecida");
-    }
-}
-
 const sendStatus = async(req, res)=>{
     res.status(200).send("USUARIO CON SESIÓN ACTIVA");
 }
 
-module.exports = {login, register, changeStatus, changePassword, sendStatus, changePasswordSesion, changePass};
+module.exports = {login, register, changeStatus, changePassword, sendStatus, changePasswordSesion};
