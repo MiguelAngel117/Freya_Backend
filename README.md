@@ -1,17 +1,18 @@
 # Freya BACKEND
-El codigo corresponde al Backend del Ecommerce Freya, este está desarrollado en Node.Js version 16.
+¡Bienvenido al backend de Freya Ecommerce! Este repositorio contiene el código desarrollado en Node.js (versión 16) para la parte backend de nuestra aplicación.
 
-Es importante que primero se instalen las diferentes librerias necesarias para el funcionamiento de la aplicación, para esto se ejecuta el comando 
+**Instalación**
+Para comenzar, asegúrate de tener instaladas todas las dependencias necesarias. Puedes hacerlo ejecutando el siguiente comando en tu terminal: *npm install*
 
-**npm build**
+**Uso**
+--->Entorno de Desarrollo
+Para inicializar el entorno de desarrollo, utiliza el siguiente comando:
+*npm run dev*
 
-Para inicializar el entorno de desarrollo se ejecuta el siguiente Comando
+--->Entorno de Producción
+Para ejecutar la aplicación en el entorno de producción, utiliza el siguiente comando:
+*npm start*
 
-**npm run dev**
-
-Para Iniciazar el entorno de ejecución se ejecuta el siguiente comando
-**npm start**
-
-Finalmente Para el entorno de pruebas se ejecuta el siguiente comando
-
-**npm run test**
+--> Entorno de Pruebas
+Para ejecutar las pruebas, utiliza el siguiente comando:
+*npm run test*
