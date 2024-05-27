@@ -28,13 +28,12 @@ const createSale = async (req, res) => {
             if (updatedQuantity < 0) {
                 return res.status(400).send(`Insufficient stock for article ${article.name_article} in size ${item.size}`);
             }
-
             if(item.quantity < 6){
                 item.total = item.quantity * article.retail_price;
             }else if(item.quantity < 20){
-                item.total += (item.quantity * article.medium_price);
+                item.total = (item.quantity * article.medium_price);
             }else{
-                item.total += (item.quantity * article.wholesale_price);
+                item.total = (item.quantity * article.wholesale_price);
             }
             totalSale += item.total;
             article.stock[sizeIndex].quantity = updatedQuantity;
