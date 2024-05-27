@@ -5,7 +5,7 @@ const {
     updateCategory, 
     deleteCategory,
     searchCategoriesByName, 
-    sortCategories} = require('../../controllers/categoriesController');
+    sortCategories, getCategoryByGender} = require('../../controllers/categoriesController');
 
 const checkAuth = require('../../middleware/authMiddle');
 const checkRoleAuth = require('../../middleware/roleAuth');
@@ -15,6 +15,7 @@ const router = express.Router();
 
 router.get(`/sorted`, sortCategories);
 router.get(`/search`, searchCategoriesByName);
+router.get(`/getByGender/:gender`, getCategoryByGender);
 router.get(`/`,getCategories);
 router.get(`/:id`, getCategory);
 

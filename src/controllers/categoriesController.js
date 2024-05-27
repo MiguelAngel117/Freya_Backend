@@ -45,11 +45,32 @@ const getCategory = async (req, res) => {
     }
 };
 
+const getCategoryByGender = async (req, res) => {
+    try {
+        const { gender } = req.params;
+
+        if (!['F', 'M', 'U'].includes(gender)) {
+            return res.status(400).json({ error: 'Invalid gender' });
+        }
+
+        let categories;
+        if (gender === 'F' || gender === 'M') {
+            categories = await categoryModel.find({ gender: { $in: [gender, 'U'] } });
+        } else {
+            categories = await categoryModel.find({ gender: 'U' });
+        }
+
+        res.status(200).json(categories);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 const updateCategory = async(req, res) =>{
     try {
         const { id } = req.params;
-        const { name_category, url_icon, url_image } = req.body;
-        const updatedCategory = await categoryModel.findByIdAndUpdate(id, { name_category, url_icon, url_image }, { new: true });
+        const { name_category, url_icon, url_image, gender } = req.body;
+        const updatedCategory = await categoryModel.findByIdAndUpdate(id, { name_category, url_icon, url_image, gender }, { new: true });
         if(!updatedCategory){
             return res.status(404).send("CATEGORY NOT FOUND");
         }
@@ -105,4 +126,4 @@ const searchCategoriesByName = async (req, res) => {
         res.status(500).send("Error searching stores by name - Internal Server Error");
     }
 }
-module.exports = { createCategory, getCategories, getCategory, updateCategory, deleteCategory, searchCategoriesByName, sortCategories };
+module.exports = { createCategory, getCategories, getCategory, updateCategory, deleteCategory, searchCategoriesByName, sortCategories, getCategoryByGender };
